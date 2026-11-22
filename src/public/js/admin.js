@@ -5,6 +5,8 @@
 const KultAdmin = {
   DAY_NAMES: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
   selectedScheduleBarberId: '', // '' for General Studio Hours, or numeric barberId
+  _bookingFilterTimer: null,
+  _clientSearchTimer: null,
 
   async loadAdminPortal() {
     const container = document.getElementById('admin-portal-content');
@@ -29,8 +31,17 @@ const KultAdmin = {
         KultStore.portfolio = overview.portfolio.filter(p => p.active);
       }
 
-      await this.loadBookingsList();
-      await this.loadClientsList();
+      if (Array.isArray(overview.bookings)) {
+        KultStore.admin.bookings = overview.bookings;
+      } else {
+        await this.loadBookingsList();
+      }
+
+      if (Array.isArray(overview.clients)) {
+        KultStore.admin.clients = overview.clients;
+      } else {
+        await this.loadClientsList();
+      }
 
       this.renderAdminShell();
     } catch (err) {
@@ -462,14 +473,18 @@ const KultAdmin = {
     KultStore.admin.bookings = data.bookings || [];
   },
 
-  async applyBookingFilters() {
+  applyBookingFilters() {
     KultStore.admin.filters.search = document.getElementById('filter-booking-search')?.value || '';
     KultStore.admin.filters.date = document.getElementById('filter-booking-date')?.value || '';
     KultStore.admin.filters.barberId = document.getElementById('filter-booking-barber')?.value || '';
     KultStore.admin.filters.serviceId = document.getElementById('filter-booking-service')?.value || '';
     KultStore.admin.filters.status = document.getElementById('filter-booking-status')?.value || '';
-    await this.loadBookingsList();
-    this.renderBookingsTableRows();
+
+    clearTimeout(this._bookingFilterTimer);
+    this._bookingFilterTimer = setTimeout(async () => {
+      await this.loadBookingsList();
+      this.renderBookingsTableRows();
+    }, 220);
   },
 
   async resetBookingFilters() {
@@ -1625,9 +1640,12 @@ const KultAdmin = {
     KultStore.admin.clients = data.clients || [];
   },
 
-  async handleClientSearch(val) {
-    await this.loadClientsList(val);
-    this.renderClientsRows();
+  handleClientSearch(val) {
+    clearTimeout(this._clientSearchTimer);
+    this._clientSearchTimer = setTimeout(async () => {
+      await this.loadClientsList(val);
+      this.renderClientsRows();
+    }, 220);
   },
 
   renderClientsTab(workspace) {

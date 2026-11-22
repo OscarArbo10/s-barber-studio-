@@ -1,10 +1,35 @@
-function sendJson(res, statusCode, payload, extraHeaders = {}) {
-  res.writeHead(statusCode, {
+const zlib = require('node:zlib');
+
+function sendJson(res, statusCode, payload, extraHeaders = {}, req = null) {
+  const rawBuf = Buffer.from(JSON.stringify(payload), 'utf8');
+  const acceptEncoding = String((req || res._req)?.headers?.['accept-encoding'] || '').toLowerCase();
+
+  const headers = {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
     ...extraHeaders
-  });
-  res.end(JSON.stringify(payload));
+  };
+
+  let bodyBuf = rawBuf;
+  if (rawBuf.length > 1024) {
+    if (acceptEncoding.includes('br')) {
+      bodyBuf = zlib.brotliCompressSync(rawBuf, {
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: 4
+        }
+      });
+      headers['Content-Encoding'] = 'br';
+      headers['Vary'] = 'Accept-Encoding';
+    } else if (acceptEncoding.includes('gzip')) {
+      bodyBuf = zlib.gzipSync(rawBuf, { level: 6 });
+      headers['Content-Encoding'] = 'gzip';
+      headers['Vary'] = 'Accept-Encoding';
+    }
+  }
+
+  headers['Content-Length'] = bodyBuf.length;
+  res.writeHead(statusCode, headers);
+  res.end(bodyBuf);
 }
 
 function readJsonBody(req, maxBytes = 35 * 1024 * 1024) {

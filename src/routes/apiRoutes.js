@@ -1,3 +1,4 @@
+const { db } = require('../database/connection');
 const publicController = require('../controllers/publicController');
 const authController = require('../controllers/authController');
 const adminController = require('../controllers/adminController');
@@ -44,6 +45,9 @@ async function handleApiRoute(req, res, urlObj) {
   // --- ADMIN & BARBER PROTECTED ROUTES ---
   if (pathname.startsWith('/api/admin/')) {
     if (pathname === '/api/admin/overview' && method === 'GET') {
+      if (db.isSupabase && typeof db.callRpcAsync === 'function') {
+        return adminController.getOverview(req, res, null);
+      }
       const user = requireAuth(req, res, ['admin', 'barber']);
       if (!user) return;
       return adminController.getOverview(req, res, user);

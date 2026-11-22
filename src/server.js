@@ -41,20 +41,74 @@ const MIME_TYPES = {
   '.mov': 'video/quicktime'
 };
 
-function serveStaticFile(res, filePath) {
+const IMAGE_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico']);
+
+// In-memory cache for static public assets
+const staticFileCache = new Map();
+
+// In-memory LRU cache (max 50 items, < 2MB each) for uploaded Supabase media
+const UPLOAD_CACHE_MAX_ITEMS = 50;
+const UPLOAD_CACHE_MAX_BYTES = 2 * 1024 * 1024;
+const uploadMediaCache = new Map();
+
+function getCachedUpload(filename) {
+  if (!uploadMediaCache.has(filename)) return null;
+  const entry = uploadMediaCache.get(filename);
+  // Refresh LRU recency
+  uploadMediaCache.delete(filename);
+  uploadMediaCache.set(filename, entry);
+  return entry;
+}
+
+function setCachedUpload(filename, entry) {
+  if (!entry || !entry.buffer || entry.buffer.length >= UPLOAD_CACHE_MAX_BYTES) return;
+  if (uploadMediaCache.has(filename)) {
+    uploadMediaCache.delete(filename);
+  } else if (uploadMediaCache.size >= UPLOAD_CACHE_MAX_ITEMS) {
+    const oldestKey = uploadMediaCache.keys().next().value;
+    uploadMediaCache.delete(oldestKey);
+  }
+  uploadMediaCache.set(filename, entry);
+}
+
+function getCacheControlForStatic(ext, urlObj) {
+  if (ext === '.html') {
+    return 'no-cache';
+  }
+  const hasVersionParam = Boolean(urlObj && urlObj.searchParams && urlObj.searchParams.has('v'));
+  if (hasVersionParam || IMAGE_EXTS.has(ext)) {
+    return 'public, max-age=31536000, immutable';
+  }
+  return 'public, max-age=3600, stale-while-revalidate=86400';
+}
+
+function serveStaticFile(res, filePath, urlObj = null) {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+  const cacheControl = getCacheControlForStatic(ext, urlObj);
+
+  const cached = staticFileCache.get(filePath);
+  if (cached) {
+    res.writeHead(200, {
+      'Content-Type': cached.contentType,
+      'Cache-Control': cacheControl,
+      'Content-Length': cached.buffer.length
+    });
+    res.end(cached.buffer);
+    return;
+  }
+
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Recurso no encontrado');
       return;
     }
+    staticFileCache.set(filePath, { buffer: data, contentType });
     res.writeHead(200, {
       'Content-Type': contentType,
-      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0'
+      'Cache-Control': cacheControl,
+      'Content-Length': data.length
     });
     res.end(data);
   });
@@ -62,6 +116,7 @@ function serveStaticFile(res, filePath) {
 
 async function requestHandler(req, res) {
   try {
+    res._req = req;
     ensureInitialized();
 
     const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
@@ -81,16 +136,35 @@ async function requestHandler(req, res) {
       return;
     }
 
-    // 2. Serve Uploaded Media from Supabase (sbarber.media_uploads) or Local Disk
+    // 2. Serve Uploaded Media from Supabase (sbarber.media_uploads) asynchronously with LRU cache
     if (pathname.startsWith('/uploads/')) {
       const filename = path.basename(pathname);
-      if (db.isSupabase) {
-        const mediaRow = db.prepare(`SELECT mime_type, data_base64 FROM media_uploads WHERE filename = ?`).get(filename);
+      if (db.isSupabase && typeof db.callRpcAsync === 'function') {
+        const cachedUpload = getCachedUpload(filename);
+        if (cachedUpload) {
+          res.writeHead(200, {
+            'Content-Type': cachedUpload.contentType,
+            'Cache-Control': 'public, max-age=604800, immutable',
+            'Content-Length': cachedUpload.buffer.length
+          });
+          res.end(cachedUpload.buffer);
+          return;
+        }
+
+        const safeFilename = filename.replace(/'/g, "''");
+        const rows = await db.callRpcAsync('sbarber_exec', {
+          sql_text: `SELECT mime_type, data_base64 FROM media_uploads WHERE filename = '${safeFilename}' LIMIT 1`,
+          is_run: false
+        });
+        const mediaRow = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
         if (mediaRow && mediaRow.data_base64) {
           const buf = Buffer.from(mediaRow.data_base64, 'base64');
+          const contentType = mediaRow.mime_type || 'application/octet-stream';
+          setCachedUpload(filename, { buffer: buf, contentType });
           res.writeHead(200, {
-            'Content-Type': mediaRow.mime_type || 'application/octet-stream',
-            'Cache-Control': 'public, max-age=86400'
+            'Content-Type': contentType,
+            'Cache-Control': 'public, max-age=604800, immutable',
+            'Content-Length': buf.length
           });
           res.end(buf);
           return;
@@ -109,7 +183,7 @@ async function requestHandler(req, res) {
         res.end();
         return;
       }
-      return serveStaticFile(res, path.join(PUBLIC_DIR, 'index.html'));
+      return serveStaticFile(res, path.join(PUBLIC_DIR, 'index.html'), urlObj);
     }
 
     // 4. Static Assets
@@ -120,12 +194,12 @@ async function requestHandler(req, res) {
     const targetFile = path.join(PUBLIC_DIR, safePath);
 
     if (targetFile.startsWith(PUBLIC_DIR) && fs.existsSync(targetFile) && fs.statSync(targetFile).isFile()) {
-      return serveStaticFile(res, targetFile);
+      return serveStaticFile(res, targetFile, urlObj);
     }
 
     // SPA Fallback for client views (/reservar, /inicio, /mis-citas)
     if (['/reservar', '/inicio', '/mis-citas'].includes(pathname)) {
-      return serveStaticFile(res, path.join(PUBLIC_DIR, 'index.html'));
+      return serveStaticFile(res, path.join(PUBLIC_DIR, 'index.html'), urlObj);
     }
 
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });

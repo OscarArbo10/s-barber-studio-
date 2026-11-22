@@ -249,7 +249,7 @@ const KultApp = {
     content.innerHTML = `
       <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-200">
         <div class="flex items-center gap-2.5 min-w-0">
-          <img src="${KultUI.escapeHtml(item.barber_avatar)}" alt="${KultUI.escapeHtml(item.barber_name)}" class="w-9 h-9 rounded-full object-cover border border-zinc-300 shrink-0" />
+          <img decoding="async" src="${KultUI.escapeHtml(item.barber_avatar)}" alt="${KultUI.escapeHtml(item.barber_name)}" class="w-9 h-9 rounded-full object-cover border border-zinc-300 shrink-0" />
           <div class="min-w-0">
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="font-title-md text-sm text-primary font-bold truncate">${KultUI.escapeHtml(item.barber_name)}</span>
@@ -274,7 +274,7 @@ const KultApp = {
                  playsinline
                  class="w-full max-h-[55vh] sm:max-h-[62vh] object-contain bg-black"></video>
         ` : `
-          <img src="${KultUI.escapeHtml(item.media_url)}"
+          <img decoding="async" src="${KultUI.escapeHtml(item.media_url)}"
                alt="${KultUI.escapeHtml(item.title)}"
                class="w-full max-h-[55vh] sm:max-h-[62vh] object-contain" />
         `}
@@ -427,7 +427,7 @@ const KultApp = {
                               ? 'bg-primary text-on-primary border-primary font-bold shadow-sm'
                               : 'bg-zinc-50 text-on-surface border-zinc-200 hover:border-zinc-400'
                           }">
-                    <img src="${KultUI.escapeHtml(b.avatar_url)}" alt="${KultUI.escapeHtml(b.name)}" class="w-8 h-8 rounded-full object-cover border ${isSelected ? 'border-white' : 'border-zinc-300'} shrink-0" />
+                    <img decoding="async" src="${KultUI.escapeHtml(b.avatar_url)}" alt="${KultUI.escapeHtml(b.name)}" class="w-8 h-8 rounded-full object-cover border ${isSelected ? 'border-white' : 'border-zinc-300'} shrink-0" />
                     <div class="text-left">
                       <span class="font-title-md text-xs font-bold block leading-tight">${KultUI.escapeHtml(b.name)}</span>
                       <span class="font-label-sm text-[9px] ${isSelected ? 'text-white/80' : 'text-outline'} uppercase">${KultUI.escapeHtml(b.specialty)} · ${count}</span>
@@ -449,12 +449,13 @@ const KultApp = {
                          class="kult-portfolio-video w-full h-full object-cover"
                          src="${KultUI.escapeHtml(featuredVideo.media_url)}"
                          poster="${KultUI.escapeHtml(featuredVideo.thumbnail_url || '')}"
+                         preload="metadata"
                          autoplay
                          muted
                          loop
                          playsinline></video>
                 ` : `
-                  <img src="${KultUI.escapeHtml(featuredVideo.media_url)}"
+                  <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.media_url)}"
                        alt="${KultUI.escapeHtml(featuredVideo.title)}"
                        class="w-full h-full object-cover" />
                 `}
@@ -493,7 +494,7 @@ const KultApp = {
                 <!-- Author pill bottom-left of video -->
                 <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2">
                   <div class="flex items-center gap-2">
-                    <img src="${KultUI.escapeHtml(featuredVideo.barber_avatar)}" alt="${KultUI.escapeHtml(featuredVideo.barber_name)}" class="w-6 h-6 rounded-full object-cover border border-white" />
+                    <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.barber_avatar)}" alt="${KultUI.escapeHtml(featuredVideo.barber_name)}" class="w-6 h-6 rounded-full object-cover border border-white" />
                     <span class="font-label-sm text-[11px] text-white font-bold uppercase">${KultUI.escapeHtml(featuredVideo.barber_name)}</span>
                   </div>
                   <span class="px-2 py-0.5 rounded bg-black/70 text-white border border-white/20 font-label-sm text-[9px] uppercase">
@@ -526,7 +527,7 @@ const KultApp = {
       ${selectedBarberObj ? `
         <div class="surface-level-2 rounded-xl p-4 mb-5 border border-zinc-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-3">
-            <img src="${KultUI.escapeHtml(selectedBarberObj.avatar_url)}" alt="${KultUI.escapeHtml(selectedBarberObj.name)}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-zinc-900 shrink-0" />
+            <img decoding="async" src="${KultUI.escapeHtml(selectedBarberObj.avatar_url)}" alt="${KultUI.escapeHtml(selectedBarberObj.name)}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-zinc-900 shrink-0" />
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
                 <h3 class="font-headline-md text-base sm:text-lg text-primary font-bold uppercase">${KultUI.escapeHtml(selectedBarberObj.name)}</h3>
@@ -637,11 +638,12 @@ const KultApp = {
                            class="kult-portfolio-video w-full h-full object-cover"
                            src="${KultUI.escapeHtml(item.media_url)}"
                            poster="${KultUI.escapeHtml(item.thumbnail_url || '')}"
+                           preload="none"
                            muted
                            loop
                            playsinline></video>
                   ` : `
-                    <img src="${KultUI.escapeHtml(item.media_url)}"
+                    <img decoding="async" src="${KultUI.escapeHtml(item.media_url)}"
                          alt="${KultUI.escapeHtml(item.title)}"
                          loading="lazy"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -685,7 +687,7 @@ const KultApp = {
                   <!-- Bottom Barber Author & Technique Tag inside Frame -->
                   <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2 min-w-0">
-                      <img src="${KultUI.escapeHtml(item.barber_avatar)}"
+                      <img decoding="async" src="${KultUI.escapeHtml(item.barber_avatar)}"
                            alt="${KultUI.escapeHtml(item.barber_name)}"
                            class="w-6 h-6 rounded-full object-cover border border-white shrink-0" />
                       <div class="min-w-0">

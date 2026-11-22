@@ -1,3 +1,5 @@
+const { db } = require('../database/connection');
+const env = require('../config/env');
 const dashboardService = require('../services/dashboardService');
 const availabilityService = require('../services/availabilityService');
 const integrationService = require('../services/integrationService');
@@ -10,32 +12,108 @@ const settingsModel = require('../models/settingsModel');
 const portfolioModel = require('../models/portfolioModel');
 const validators = require('../validation/validators');
 const { sendJson, readJsonBody } = require('../utils/http');
+const { extractToken } = require('../middlewares/authMiddleware');
+const { getNowInTimezone, addDays, formatDateLabelEs } = require('../utils/dateUtils');
 
 const adminController = {
-  getOverview(req, res, user) {
-    const barberScope = user.role === 'barber' ? user.barber_id : null;
-    const dashboard = dashboardService.getDashboardMetrics({ barberId: barberScope });
-    const categories = serviceModel.listCategories();
-    const services = serviceModel.listServices();
-    const barbers = barberModel.listBarbers();
-    const studioHours = scheduleModel.getStudioWorkingHours();
-    const blocks = scheduleModel.listBlocks({ barberId: barberScope });
-    const portfolio = portfolioModel.listItems({ barberId: barberScope });
-    const settings = settingsModel.getSettings();
-    const integrations = integrationService.getStatus();
+  async getOverview(req, res, user) {
+    try {
+      if (db.isSupabase && typeof db.callRpcAsync === 'function') {
+        const token = extractToken(req);
+        const { dateStr: today } = getNowInTimezone(env.defaultTimezone);
+        const rpcData = await db.callRpcAsync('sbarber_get_admin_overview', {
+          session_token: token || null,
+          p_today: today,
+          p_chart_start: addDays(today, -3),
+          p_chart_end: addDays(today, 3)
+        });
 
-    sendJson(res, 200, {
-      user,
-      dashboard,
-      categories,
-      services,
-      barbers,
-      studioHours,
-      blocks,
-      portfolio,
-      settings,
-      integrations
-    });
+        if (!rpcData || !rpcData.authenticated || !rpcData.user) {
+          return sendJson(res, 401, {
+            error: 'No autenticado. Inicia sesión para acceder a las funciones administrativas.'
+          }, {}, req);
+        }
+        if (!['admin', 'barber'].includes(rpcData.user.role)) {
+          return sendJson(res, 403, {
+            error: 'Permisos insuficientes para realizar esta operación.'
+          }, {}, req);
+        }
+
+        const settings = rpcData.settings || {};
+        const chartMap = new Map((rpcData.chartRows || []).map(r => [r.date, r]));
+        const dailyChart = [];
+        for (let offset = -3; offset <= 3; offset++) {
+          const d = addDays(today, offset);
+          const row = chartMap.get(d) || { count: 0, revenue: 0 };
+          const lbl = formatDateLabelEs(d);
+          dailyChart.push({
+            date: d,
+            label: `${lbl.dayName} ${lbl.dayNum}`,
+            isToday: d === today,
+            bookings: Number(row.count) || 0,
+            revenue: Number(row.revenue) || 0
+          });
+        }
+
+        const dashboard = {
+          today,
+          currencySymbol: settings.currency_symbol || env.defaultCurrencySymbol || '$',
+          kpis: rpcData.kpis || {
+            todayBookings: 0,
+            pendingBookings: 0,
+            confirmedBookings: 0,
+            cancelledBookings: 0,
+            totalRevenue: 0,
+            todayRevenue: 0
+          },
+          topServices: rpcData.topServices || [],
+          barberPerformance: rpcData.barberPerformance || [],
+          upcomingAppointments: rpcData.upcomingAppointments || [],
+          dailyChart
+        };
+
+        return sendJson(res, 200, {
+          user: rpcData.user,
+          dashboard,
+          categories: rpcData.categories || [],
+          services: rpcData.services || [],
+          barbers: rpcData.barbers || [],
+          studioHours: rpcData.studioHours || [],
+          blocks: rpcData.blocks || [],
+          portfolio: rpcData.portfolio || [],
+          bookings: rpcData.bookings || [],
+          clients: rpcData.clients || [],
+          settings,
+          integrations: integrationService.getStatus()
+        }, {}, req);
+      }
+
+      const barberScope = user.role === 'barber' ? user.barber_id : null;
+      const dashboard = dashboardService.getDashboardMetrics({ barberId: barberScope });
+      const categories = serviceModel.listCategories();
+      const services = serviceModel.listServices();
+      const barbers = barberModel.listBarbers();
+      const studioHours = scheduleModel.getStudioWorkingHours();
+      const blocks = scheduleModel.listBlocks({ barberId: barberScope });
+      const portfolio = portfolioModel.listItems({ barberId: barberScope });
+      const settings = settingsModel.getSettings();
+      const integrations = integrationService.getStatus();
+
+      sendJson(res, 200, {
+        user,
+        dashboard,
+        categories,
+        services,
+        barbers,
+        studioHours,
+        blocks,
+        portfolio,
+        settings,
+        integrations
+      }, {}, req);
+    } catch (err) {
+      sendJson(res, 500, { error: err.message }, {}, req);
+    }
   },
 
   // --- BOOKINGS MANAGEMENT ---

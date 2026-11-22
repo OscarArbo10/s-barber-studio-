@@ -1,4 +1,5 @@
 const { db } = require('../database/connection');
+const env = require('../config/env');
 const settingsModel = require('../models/settingsModel');
 const serviceModel = require('../models/serviceModel');
 const barberModel = require('../models/barberModel');
@@ -9,6 +10,7 @@ const availabilityService = require('../services/availabilityService');
 const integrationService = require('../services/integrationService');
 const validators = require('../validation/validators');
 const { sendJson, readJsonBody } = require('../utils/http');
+const { getNowInTimezone, addDays } = require('../utils/dateUtils');
 const { getAuthenticatedUser, extractToken } = require('../middlewares/authMiddleware');
 
 const publicController = {
@@ -16,8 +18,15 @@ const publicController = {
     try {
       if (db.isSupabase && typeof db.callRpcAsync === 'function') {
         const token = extractToken(req);
+        const { dateStr: today } = getNowInTimezone(env.defaultTimezone);
+        const pDates = [];
+        for (let i = 0; i < 14; i++) {
+          pDates.push(addDays(today, i));
+        }
+
         const boot = await db.callRpcAsync('sbarber_get_bootstrap', {
-          session_token: token || null
+          session_token: token || null,
+          p_dates: pDates
         });
 
         const settings = boot.settings || {};
@@ -30,12 +39,13 @@ const publicController = {
 
         const firstService = services[0] || null;
         const initialAvailability = firstService
-          ? await availabilityService.getAvailabilityAsync({
+          ? availabilityService.getAvailability({
               serviceId: firstService.id,
               barberId: 'any',
               daysCount: 14,
               preloadedSettings: settings,
-              preloadedService: firstService
+              preloadedService: firstService,
+              preloadedSnapshot: boot.availabilitySnapshot || null
             })
           : null;
 
@@ -48,7 +58,7 @@ const publicController = {
           portfolio,
           initialAvailability,
           user
-        });
+        }, {}, req);
       }
 
       const settings = settingsModel.getSettings();
