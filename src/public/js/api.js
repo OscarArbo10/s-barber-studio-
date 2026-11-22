@@ -55,6 +55,67 @@ const KultAPI = {
       reader.onerror = () => reject(new Error('No se pudo leer el archivo seleccionado.'));
       reader.readAsDataURL(file);
     });
+  },
+
+  uploadMediaDirect(file, prefix = 'media', onProgress = null) {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        return reject(new Error('No se seleccionó ningún archivo.'));
+      }
+      const isVideo = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(file.name);
+      const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        return reject(new Error(isVideo ? 'El video supera el límite máximo de 50 MB.' : 'La imagen supera el límite máximo de 10 MB.'));
+      }
+
+      const storageCfg = window.KultStore?.admin?.overview?.integrations?.storage;
+      if (!storageCfg || !storageCfg.supabaseUrl || !storageCfg.anonKey || !storageCfg.bucket) {
+        // Fallback to server base64 upload
+        return this.fileToDataUrl(file)
+          .then(dataUrl => this.post('/api/admin/upload', { dataUrl, prefix }))
+          .then(res => resolve(res.url))
+          .catch(reject);
+      }
+
+      const extMatch = (file.name || '').match(/\.([a-z0-9]+)$/i);
+      let ext = extMatch ? extMatch[1].toLowerCase() : (isVideo ? 'mp4' : 'jpg');
+      if (ext === 'jpeg') ext = 'jpg';
+      const rand = Math.random().toString(36).slice(2, 10);
+      const filename = `${prefix}-${Date.now()}-${rand}.${ext}`;
+      const endpoint = `${storageCfg.supabaseUrl.replace(/\/$/, '')}/storage/v1/object/${storageCfg.bucket}/${filename}`;
+      const publicUrl = `${storageCfg.supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${storageCfg.bucket}/${filename}`;
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', endpoint, true);
+      xhr.setRequestHeader('apikey', storageCfg.anonKey);
+      xhr.setRequestHeader('Authorization', `Bearer ${storageCfg.anonKey}`);
+      xhr.setRequestHeader('Content-Type', file.type || (isVideo ? 'video/mp4' : 'image/jpeg'));
+      xhr.setRequestHeader('x-upsert', 'true');
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && typeof onProgress === 'function') {
+          const pct = Math.min(99, Math.round((e.loaded / e.total) * 100));
+          onProgress(pct);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          if (typeof onProgress === 'function') onProgress(100);
+          resolve(publicUrl);
+        } else {
+          let errMsg = `Error ${xhr.status} al subir el archivo.`;
+          try {
+            const parsed = JSON.parse(xhr.responseText);
+            errMsg = parsed.message || parsed.error || errMsg;
+          } catch (_) {}
+          reject(new Error(errMsg));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error('Error de red al subir el archivo. Verifica tu conexión.'));
+      xhr.send(file);
+    });
   }
 };
 

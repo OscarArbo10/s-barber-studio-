@@ -2050,11 +2050,10 @@ const KultAdmin = {
     if (!file) return;
     try {
       KultUI.toast('Subiendo imagen...');
-      const dataUrl = await KultAPI.fileToDataUrl(file);
-      const res = await KultAPI.post('/api/admin/upload', { dataUrl, prefix });
+      const url = await KultAPI.uploadMediaDirect(file, prefix);
       const targetEl = document.getElementById(targetInputId);
       if (targetEl) {
-        targetEl.value = res.url;
+        targetEl.value = url;
       }
       KultUI.toast('Imagen cargada correctamente.');
     } catch (err) {
@@ -2241,14 +2240,15 @@ const KultAdmin = {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
           <div>
-            <label class="kult-label">URL de Foto o Video (.mp4 / .jpg / .webp) *</label>
+            <label class="kult-label">URL de Foto o Video (.mp4 / .mov / .jpg / .webp) *</label>
             <input id="pf-media-url" type="text" required value="${KultUI.escapeHtml(item ? item.media_url : '')}" placeholder="https://... o sube archivo a la derecha" class="kult-input" />
           </div>
           <div>
-            <label class="kult-label">Subir Foto o Video desde tu Equipo</label>
-            <input type="file" accept="image/*,video/mp4,video/webm" onchange="KultAdmin.handlePortfolioFileUpload(this)" class="kult-input py-2 text-xs" />
+            <label class="kult-label">Subir Foto o Video (Hasta 50 MB)</label>
+            <input type="file" accept="image/*,video/*,.mp4,.webm,.mov,.m4v" onchange="KultAdmin.handlePortfolioFileUpload(this)" class="kult-input py-2 text-xs" />
           </div>
         </div>
+        <div id="pf-upload-status" class="hidden rounded-lg bg-zinc-50 border border-zinc-200 px-3 py-2 text-xs text-zinc-800"></div>
 
         <div>
           <label class="kult-label">Portada / Poster URL (Opcional para Videos)</label>
@@ -2258,17 +2258,17 @@ const KultAdmin = {
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
           <div class="flex items-center gap-4">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input id="pf-featured" type="checkbox" ${(item && item.featured) ? 'checked' : ''} class="w-4 h-4 accent-white" />
+              <input id="pf-featured" type="checkbox" ${(item && item.featured) ? 'checked' : ''} class="w-4 h-4 accent-zinc-900" />
               <span class="font-label-sm text-xs uppercase text-primary">Destacar en Inicio</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
-              <input id="pf-active" type="checkbox" ${(!item || item.active) ? 'checked' : ''} class="w-4 h-4 accent-white" />
+              <input id="pf-active" type="checkbox" ${(!item || item.active) ? 'checked' : ''} class="w-4 h-4 accent-zinc-900" />
               <span class="font-label-sm text-xs uppercase text-primary">Visible al Público</span>
             </label>
           </div>
           <div class="flex gap-2">
             <button type="button" class="btn-kult-secondary" onclick="KultAdmin.closeModal()">Cancelar</button>
-            <button type="submit" class="btn-kult-primary">Publicar Trabajo</button>
+            <button id="pf-submit-btn" type="submit" class="btn-kult-primary">Publicar Trabajo</button>
           </div>
         </div>
       </form>
@@ -2281,20 +2281,51 @@ const KultAdmin = {
   async handlePortfolioFileUpload(fileInput) {
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
+
+    const statusEl = document.getElementById('pf-upload-status');
+    const submitBtn = document.getElementById('pf-submit-btn');
+
     try {
-      const isVid = file.type.startsWith('video/');
+      const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(file.name);
       const mediaTypeSelect = document.getElementById('pf-media-type');
       if (mediaTypeSelect) {
         mediaTypeSelect.value = isVid ? 'video' : 'image';
       }
-      KultUI.toast(`Subiendo ${isVid ? 'video' : 'fotografía'}...`);
-      const dataUrl = await KultAPI.fileToDataUrl(file);
-      const res = await KultAPI.post('/api/admin/upload', { dataUrl, prefix: isVid ? 'reel' : 'look' });
+
+      if (submitBtn) submitBtn.disabled = true;
+      if (statusEl) {
+        statusEl.classList.remove('hidden');
+        statusEl.innerHTML = `Subiendo ${isVid ? 'video' : 'fotografía'} (${(file.size / (1024 * 1024)).toFixed(1)} MB)... <strong>0%</strong>`;
+      }
+
+      const url = await KultAPI.uploadMediaDirect(file, isVid ? 'reel' : 'look', (pct) => {
+        if (statusEl) {
+          statusEl.innerHTML = `
+            <div class="flex items-center justify-between mb-1">
+              <span>Subiendo ${isVid ? 'video' : 'fotografía'} directo a Supabase Storage...</span>
+              <strong>${pct}%</strong>
+            </div>
+            <div class="w-full h-1.5 bg-zinc-200 rounded-full overflow-hidden">
+              <div class="h-full bg-zinc-900 transition-all" style="width:${pct}%"></div>
+            </div>
+          `;
+        }
+      });
+
       const targetEl = document.getElementById('pf-media-url');
-      if (targetEl) targetEl.value = res.url;
-      KultUI.toast('Archivo cargado correctamente.');
+      if (targetEl) targetEl.value = url;
+
+      if (statusEl) {
+        statusEl.innerHTML = `<span class="text-[#059669] font-semibold">✓ ${isVid ? 'Video' : 'Fotografía'} subido correctamente. Haz clic en "Publicar Trabajo" para guardarlo.</span>`;
+      }
+      KultUI.toast(`${isVid ? 'Video' : 'Fotografía'} cargado correctamente.`);
     } catch (err) {
+      if (statusEl) {
+        statusEl.innerHTML = `<span class="text-red-600 font-semibold">Error: ${KultUI.escapeHtml(err.message)}</span>`;
+      }
       KultUI.toast(err.message, 'error');
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
   },
 

@@ -27,7 +27,10 @@ const integrationService = {
       storage: {
         configured: storageConfigured,
         provider: env.storage.provider,
-        uploadDir: '/uploads'
+        uploadDir: '/uploads',
+        bucket: 'sbarber-media',
+        supabaseUrl: env.supabase.url,
+        anonKey: env.supabase.anonKey
       }
     };
   },
