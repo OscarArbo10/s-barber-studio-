@@ -2108,8 +2108,8 @@ const KultAdmin = {
               <div>
                 <div class="relative h-56 bg-black overflow-hidden">
                   ${item.media_type === 'video' ? `
-                    <video src="${KultUI.escapeHtml(item.media_url)}"
-                           poster="${KultUI.escapeHtml(item.thumbnail_url || '')}"
+                    <video src="${KultUI.escapeHtml(item.media_url)}${item.media_url.includes('#') ? '' : '#t=0.001'}"
+                           preload="metadata"
                            controls
                            playsinline
                            class="w-full h-full object-cover"></video>

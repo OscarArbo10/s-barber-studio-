@@ -270,7 +270,7 @@ const KultApp = {
       <div class="rounded-lg overflow-hidden bg-zinc-950 border border-zinc-200 mb-3 flex items-center justify-center max-h-[55vh] sm:max-h-[62vh]">
         ${item.media_type === 'video' ? `
           <video src="${KultUI.escapeHtml(item.media_url)}"
-                 poster="${KultUI.escapeHtml(item.thumbnail_url || '')}"
+                 preload="metadata"
                  controls
                  autoplay
                  playsinline
@@ -378,14 +378,10 @@ const KultApp = {
               Explora las sesiones en video, degradados milimétricos, corte a tijera y rituales de navaja de nuestros barberos. Elige tu estilo y agenda directamente con el autor.
             </p>
 
-            <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 pt-1">
-              <button type="button" class="btn-kult-primary py-2.5 px-3 sm:px-5 text-[11px] sm:text-xs" onclick="KultApp.switchView('reservar')">
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <button type="button" class="btn-kult-primary py-2.5 px-5 text-xs" onclick="KultApp.switchView('reservar')">
                 <span>Agendar Cita</span>
                 <span class="material-symbols-outlined text-[16px]">calendar_add_on</span>
-              </button>
-              <button type="button" class="btn-kult-secondary py-2.5 px-3 sm:px-4 text-[11px] sm:text-xs" onclick="KultApp.openUploadWorkShortcut()">
-                <span class="material-symbols-outlined text-[16px]">upload_file</span>
-                <span>Subir Trabajo</span>
               </button>
             </div>
           </div>
@@ -449,8 +445,7 @@ const KultApp = {
                 ${featuredVideo.media_type === 'video' ? `
                   <video id="hero-featured-video"
                          class="kult-portfolio-video w-full h-full object-cover"
-                         src="${KultUI.escapeHtml(featuredVideo.media_url)}"
-                         poster="${KultUI.escapeHtml(featuredVideo.thumbnail_url || '')}"
+                         src="${KultUI.escapeHtml(featuredVideo.media_url)}${featuredVideo.media_url.includes('#') ? '' : '#t=0.001'}"
                          preload="metadata"
                          autoplay
                          muted
@@ -638,9 +633,8 @@ const KultApp = {
                   ${isVideo ? `
                     <video id="${videoDomId}"
                            class="kult-portfolio-video w-full h-full object-cover"
-                           src="${KultUI.escapeHtml(item.media_url)}"
-                           poster="${KultUI.escapeHtml(item.thumbnail_url || '')}"
-                           preload="none"
+                           src="${KultUI.escapeHtml(item.media_url)}${item.media_url.includes('#') ? '' : '#t=0.001'}"
+                           preload="metadata"
                            muted
                            loop
                            playsinline></video>

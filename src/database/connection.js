@@ -122,7 +122,7 @@ function translateSqliteToPostgres(sql, isRun) {
 
   // Translate datetime('now') and session expiry comparisons
   out = out.replace(/datetime\(\s*expires_at\s*\)\s*<=\s*datetime\(\s*'now'\s*\)/gi, 'expires_at::timestamptz <= NOW()');
-  out = out.replace(/datetime\(\s*'now'\s*\)/gi, 'NOW()::text');
+  out = out.replace(/datetime\(\s*'now'\s*\)/gi, 'NOW()');
   out = out.replace(/\bLIKE\b/g, 'ILIKE');
 
   // Translate INSERT OR IGNORE INTO ... VALUES (...) -> INSERT INTO ... VALUES (...) ON CONFLICT DO NOTHING
