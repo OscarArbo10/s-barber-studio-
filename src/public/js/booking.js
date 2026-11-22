@@ -123,17 +123,17 @@ const KultBooking = {
       if (!badge || !label) continue;
 
       if (i === currentStep) {
-        badge.className = 'w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm transition-transform scale-105';
+        badge.className = 'w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-xs shadow-sm transition-transform scale-105';
         badge.textContent = String(i);
-        label.className = 'font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold';
+        label.className = 'font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-primary font-bold';
       } else if (i < currentStep) {
-        badge.className = 'w-8 h-8 rounded-full bg-zinc-200 text-primary flex items-center justify-center font-label-md text-label-md transition-all';
+        badge.className = 'w-8 h-8 rounded-full bg-zinc-200 text-primary flex items-center justify-center font-label-md text-xs transition-all';
         badge.innerHTML = '<span class="material-symbols-outlined text-[16px]">check</span>';
-        label.className = 'font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant';
+        label.className = 'font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-on-surface-variant';
       } else {
-        badge.className = 'w-8 h-8 rounded-full bg-zinc-100 text-on-surface-variant border border-zinc-200 flex items-center justify-center font-label-md text-label-md transition-all';
+        badge.className = 'w-8 h-8 rounded-full bg-zinc-100 text-on-surface-variant border border-zinc-200 flex items-center justify-center font-label-md text-xs transition-all';
         badge.textContent = String(i);
-        label.className = 'font-label-sm text-label-sm uppercase tracking-wider text-outline';
+        label.className = 'font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-outline';
       }
     }
   },
@@ -439,9 +439,9 @@ const KultBooking = {
 
       if (!slot.available) {
         return `
-          <div class="p-space-sm rounded-lg bg-zinc-100 text-zinc-400 font-label-lg text-label-lg uppercase flex items-center justify-between cursor-not-allowed border border-zinc-200">
+          <div class="p-2.5 sm:p-space-sm rounded-lg bg-zinc-100 text-zinc-400 font-label-lg text-xs sm:text-label-lg uppercase flex items-center justify-between cursor-not-allowed border border-zinc-200">
             <span class="line-through">${KultUI.escapeHtml(slot.label12h)}</span>
-            <span class="font-label-sm text-label-sm text-zinc-400">${KultUI.escapeHtml(slot.reason === 'Ocupado' ? 'Lleno' : slot.reason)}</span>
+            <span class="font-label-sm text-[9px] sm:text-label-sm text-zinc-400">${KultUI.escapeHtml(slot.reason === 'Ocupado' ? 'Lleno' : slot.reason)}</span>
           </div>
         `;
       }
@@ -449,20 +449,20 @@ const KultBooking = {
       if (isSelected) {
         return `
           <button type="button"
-                  class="time-slot selected-time p-space-sm rounded-lg bg-primary text-on-primary font-label-lg text-label-lg uppercase flex items-center justify-between transition-all shadow-md"
+                  class="time-slot selected-time p-2.5 sm:p-space-sm rounded-lg bg-primary text-on-primary font-label-lg text-xs sm:text-label-lg uppercase flex items-center justify-between transition-all shadow-md"
                   onclick="KultBooking.selectTime('${slot.time}')">
             <span class="font-bold">${KultUI.escapeHtml(slot.label12h)}</span>
-            <span class="material-symbols-outlined text-[18px]">done</span>
+            <span class="material-symbols-outlined text-[16px] sm:text-[18px]">done</span>
           </button>
         `;
       }
 
       return `
         <button type="button"
-                class="time-slot p-space-sm rounded-lg bg-white hover:bg-zinc-50 text-primary font-label-lg text-label-lg uppercase flex items-center justify-between transition-all border border-zinc-200 shadow-sm"
+                class="time-slot p-2.5 sm:p-space-sm rounded-lg bg-white hover:bg-zinc-50 text-primary font-label-lg text-xs sm:text-label-lg uppercase flex items-center justify-between transition-all border border-zinc-200 shadow-sm"
                 onclick="KultBooking.selectTime('${slot.time}')">
           <span>${KultUI.escapeHtml(slot.label12h)}</span>
-          <span class="font-label-sm text-label-sm text-[#059669] flex items-center gap-1">
+          <span class="font-label-sm text-[9px] sm:text-label-sm text-[#059669] flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>Libre
           </span>
         </button>

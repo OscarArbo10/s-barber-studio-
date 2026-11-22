@@ -99,43 +99,43 @@
           },
           fontSize: {
             "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "600" }],
-            "headline-2xl-mobile": ["40px", { lineHeight: "44px", letterSpacing: "-0.03em", fontWeight: "800" }],
+            "headline-2xl-mobile": ["32px", { lineHeight: "36px", letterSpacing: "-0.03em", fontWeight: "800" }],
             "title-md": ["16px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "600" }],
-            "headline-lg": ["32px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "700" }],
             "body-md": ["15px", { lineHeight: "22px", letterSpacing: "0em", fontWeight: "400" }],
             "body-lg": ["18px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "400" }],
-            "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.12em", fontWeight: "700" }],
-            "headline-xl-mobile": ["32px", { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "700" }],
-            "headline-2xl": ["72px", { lineHeight: "76px", letterSpacing: "-0.04em", fontWeight: "800" }],
-            "headline-xl": ["48px", { lineHeight: "52px", letterSpacing: "-0.03em", fontWeight: "700" }],
-            "headline-md": ["24px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" }],
-            "label-lg": ["14px", { lineHeight: "18px", letterSpacing: "0.06em", fontWeight: "600" }],
+            "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.1em", fontWeight: "700" }],
+            "headline-xl-mobile": ["26px", { lineHeight: "30px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "headline-2xl": ["56px", { lineHeight: "60px", letterSpacing: "-0.04em", fontWeight: "800" }],
+            "headline-xl": ["44px", { lineHeight: "48px", letterSpacing: "-0.03em", fontWeight: "700" }],
+            "headline-md": ["20px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "label-lg": ["13px", { lineHeight: "18px", letterSpacing: "0.05em", fontWeight: "600" }],
             "body-sm": ["13px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "400" }],
-            "title-lg": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "700" }]
+            "title-lg": ["18px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "700" }]
           }
         }
       }
     };
   </script>
-  <link rel="stylesheet" href="/css/styles.css?v=20261122c" />
+  <link rel="stylesheet" href="/css/styles.css?v=20261122d" />
 </head>
 <body class="bg-surface text-on-surface flex flex-col min-h-screen selection:bg-primary selection:text-on-primary">
 
-  <!-- TOP HEADER (Crisp White Header with Subtle Hairline Border) -->
+  <!-- TOP HEADER -->
   <header class="fixed top-0 w-full z-50 pt-safe bg-white/95 backdrop-blur-xl border-b border-zinc-200 shadow-sm">
-    <div class="kult-container h-16 flex items-center justify-between">
-      <div class="flex items-center gap-space-sm cursor-pointer" onclick="KultApp.switchView('inicio')">
-        <div class="w-9 h-9 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-headline-md font-extrabold text-lg shadow-sm">
+    <div class="kult-container h-14 sm:h-16 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 cursor-pointer min-w-0" onclick="KultApp.switchView('inicio')">
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-headline-md font-extrabold text-base sm:text-lg shadow-sm shrink-0">
           S
         </div>
-        <div class="flex flex-col">
-          <span id="header-brand-title" class="font-headline-md text-title-md tracking-wider text-primary uppercase leading-none font-bold">S BARBER STUDIO</span>
-          <span id="header-brand-subtitle" class="font-label-sm text-label-sm text-outline tracking-widest uppercase mt-0.5">Lookbook · Videos &amp; Fotos</span>
+        <div class="flex flex-col min-w-0">
+          <span id="header-brand-title" class="font-headline-md text-sm sm:text-base tracking-wider text-primary uppercase leading-none font-bold truncate">S BARBER STUDIO</span>
+          <span id="header-brand-subtitle" class="font-label-sm text-[9px] sm:text-[10px] text-outline tracking-widest uppercase mt-0.5 truncate">Lookbook · Videos &amp; Fotos</span>
         </div>
       </div>
 
       <!-- Desktop Navigation Links -->
-      <div class="hidden md:flex items-center gap-8">
+      <div class="hidden md:flex items-center gap-8 shrink-0">
         <button id="desk-nav-inicio" type="button" onclick="KultApp.switchView('inicio')" class="font-label-md text-xs uppercase tracking-widest text-primary border-b-2 border-primary pb-1 font-bold transition-all">
           Inicio (Fotos &amp; Videos)
         </button>
@@ -151,7 +151,7 @@
       </div>
 
       <!-- Admin / Profile Trigger -->
-      <div class="flex items-center gap-space-sm">
+      <div class="flex items-center gap-2 shrink-0">
         <span id="header-user-role-label" class="hidden sm:inline-block font-label-sm text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-zinc-100 text-primary border border-zinc-200"></span>
         <button type="button"
                 title="Panel Administrativo / Perfil"
@@ -167,134 +167,138 @@
   </header>
 
   <!-- MAIN CONTENT WORKSPACE -->
-  <main class="flex flex-col relative w-full pt-20 pb-44 bg-white min-h-screen">
+  <main class="flex flex-col relative w-full pt-16 sm:pt-20 pb-48 bg-white min-h-screen">
     <div class="kult-container">
 
       <!-- ================================================================ -->
       <!-- VIEW 1: INICIO (Editorial Showcase — Videos & Fotos)             -->
       <!-- ================================================================ -->
-      <section id="view-inicio">
-        <div id="inicio-content-container"></div>
+      <section id="view-inicio" class="w-full min-w-0">
+        <div id="inicio-content-container" class="w-full min-w-0"></div>
       </section>
 
       <!-- ================================================================ -->
       <!-- VIEW 2: RESERVAR (4-Step Booking Funnel)                         -->
       <!-- ================================================================ -->
-      <section id="view-reservar" class="hidden w-full max-w-4xl mx-auto">
+      <section id="view-reservar" class="hidden w-full max-w-4xl mx-auto min-w-0">
         <!-- Stepper Indicator -->
-        <div class="w-full surface-level-1 p-space-md rounded-xl mb-space-md">
+        <div class="w-full surface-level-1 p-3 sm:p-4 rounded-xl mb-4">
           <div class="flex items-center justify-between relative">
-            <div class="absolute top-1/2 left-4 right-4 h-0.5 bg-zinc-200 -translate-y-1/2 z-0"></div>
+            <div class="absolute top-4 left-6 right-6 h-0.5 bg-zinc-200 z-0"></div>
             <!-- Step 1 -->
-            <button class="step-btn flex flex-col items-center gap-1.5 relative z-10 group" onclick="KultBooking.switchStep(1)" type="button">
-              <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm transition-transform active:scale-95" id="step-badge-1">1</div>
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold" id="step-label-1">Servicio</span>
+            <button class="step-btn flex flex-col items-center gap-1 relative z-10 group" onclick="KultBooking.switchStep(1)" type="button">
+              <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-xs shadow-sm transition-transform active:scale-95" id="step-badge-1">1</div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-primary font-bold" id="step-label-1">Servicio</span>
             </button>
             <!-- Step 2 -->
-            <button class="step-btn flex flex-col items-center gap-1.5 relative z-10 group" onclick="KultBooking.switchStep(2)" type="button">
-              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-md text-label-md transition-all" id="step-badge-2">2</div>
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline" id="step-label-2">Barbero</span>
+            <button class="step-btn flex flex-col items-center gap-1 relative z-10 group" onclick="KultBooking.switchStep(2)" type="button">
+              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-md text-xs transition-all" id="step-badge-2">2</div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-outline" id="step-label-2">Barbero</span>
             </button>
             <!-- Step 3 -->
-            <button class="step-btn flex flex-col items-center gap-1.5 relative z-10 group" onclick="KultBooking.switchStep(3)" type="button">
-              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-md text-label-md transition-all" id="step-badge-3">3</div>
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline" id="step-label-3">Fecha</span>
+            <button class="step-btn flex flex-col items-center gap-1 relative z-10 group" onclick="KultBooking.switchStep(3)" type="button">
+              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-md text-xs transition-all" id="step-badge-3">3</div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-outline" id="step-label-3">Fecha</span>
             </button>
             <!-- Step 4 -->
-            <button class="step-btn flex flex-col items-center gap-1.5 relative z-10 group" onclick="KultBooking.switchStep(4)" type="button">
-              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-md text-label-md transition-all" id="step-badge-4">4</div>
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline" id="step-label-4">Confirmar</span>
+            <button class="step-btn flex flex-col items-center gap-1 relative z-10 group" onclick="KultBooking.switchStep(4)" type="button">
+              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-md text-xs transition-all" id="step-badge-4">4</div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-outline" id="step-label-4">Confirmar</span>
             </button>
           </div>
         </div>
 
         <!-- STEP 1: SERVICIO -->
-        <section class="flex flex-col w-full mb-space-lg" id="step-content-1">
-          <div class="flex items-center justify-between mb-space-sm">
-            <h2 class="font-headline-md text-headline-md tracking-tight uppercase text-primary font-bold">Elige Servicio</h2>
-            <span class="font-label-sm text-label-sm uppercase text-outline tracking-widest">Paso 01/04</span>
+        <section class="flex flex-col w-full mb-6" id="step-content-1">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="font-headline-md text-lg sm:text-xl tracking-tight uppercase text-primary font-bold">Elige Servicio</h2>
+            <span class="font-label-sm text-[10px] uppercase text-outline tracking-widest">Paso 01/04</span>
           </div>
           <!-- Category Pill Filters -->
-          <div id="booking-categories-container" class="flex items-center gap-space-xs overflow-x-auto pb-space-sm mb-space-md no-scrollbar"></div>
+          <div id="booking-categories-container" class="flex items-center gap-2 overflow-x-auto pb-2 mb-3 no-scrollbar"></div>
           <!-- Service Selection Cards List -->
-          <div id="booking-services-container" class="grid grid-cols-1 md:grid-cols-2 gap-space-sm"></div>
+          <div id="booking-services-container" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
         </section>
 
         <!-- STEP 2: BARBERO -->
-        <section class="flex flex-col w-full mb-space-lg" id="step-content-2">
-          <div class="flex items-center justify-between mb-space-sm">
+        <section class="flex flex-col w-full mb-6" id="step-content-2">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex flex-col">
-              <h2 class="font-headline-md text-headline-md tracking-tight uppercase text-primary font-bold">Barbero Especialista</h2>
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Confía tu estilo en manos expertas</span>
+              <h2 class="font-headline-md text-lg sm:text-xl tracking-tight uppercase text-primary font-bold">Barbero Especialista</h2>
+              <span class="font-body-sm text-xs text-on-surface-variant">Confía tu estilo en manos expertas</span>
             </div>
-            <span class="font-label-sm text-label-sm uppercase text-outline tracking-widest">Paso 02/04</span>
+            <span class="font-label-sm text-[10px] uppercase text-outline tracking-widest">Paso 02/04</span>
           </div>
           <!-- Horizontal Barber Carousel -->
-          <div id="booking-barbers-container" class="flex gap-space-sm overflow-x-auto pb-space-sm pt-space-xs no-scrollbar"></div>
+          <div id="booking-barbers-container" class="flex gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar"></div>
         </section>
 
         <!-- STEP 3: FECHA & HORA -->
-        <section class="flex flex-col w-full mb-space-lg" id="step-content-3">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-space-sm">
+        <section class="flex flex-col w-full mb-6" id="step-content-3">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex flex-col">
-              <h2 class="font-headline-md text-headline-md tracking-tight uppercase text-primary font-bold">Fecha &amp; Hora</h2>
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Selecciona el bloque de tu sesión</span>
+              <h2 class="font-headline-md text-lg sm:text-xl tracking-tight uppercase text-primary font-bold">Fecha &amp; Hora</h2>
+              <span class="font-body-sm text-xs text-on-surface-variant">Selecciona el bloque de tu sesión</span>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" title="Semana anterior" onclick="KultBooking.navigateCalendarDays(-7)" class="btn-kult-secondary py-1 px-2 text-xs">
-                <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-              </button>
-              <input id="booking-date-jump" type="date" onchange="KultBooking.jumpToDateInput(this.value)" class="kult-input py-1 px-2.5 text-xs w-36" />
-              <button type="button" title="Semana siguiente" onclick="KultBooking.navigateCalendarDays(7)" class="btn-kult-secondary py-1 px-2 text-xs">
-                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-              </button>
-              <span class="font-label-sm text-label-sm uppercase text-outline tracking-widest ml-1">Paso 03/04</span>
-            </div>
+            <span class="font-label-sm text-[10px] uppercase text-outline tracking-widest">Paso 03/04</span>
+          </div>
+
+          <!-- Week Navigation Bar -->
+          <div class="flex items-center justify-between gap-2 bg-zinc-50 border border-zinc-200 rounded-lg p-1.5 mb-3">
+            <button type="button" title="Semana anterior" onclick="KultBooking.navigateCalendarDays(-7)" class="btn-kult-secondary py-1.5 px-2.5 text-xs">
+              <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+              <span class="hidden sm:inline">Anterior</span>
+            </button>
+            <input id="booking-date-jump" type="date" onchange="KultBooking.jumpToDateInput(this.value)" class="kult-input py-1 px-2.5 text-xs max-w-[155px] text-center font-semibold" />
+            <button type="button" title="Semana siguiente" onclick="KultBooking.navigateCalendarDays(7)" class="btn-kult-secondary py-1.5 px-2.5 text-xs">
+              <span class="hidden sm:inline">Siguiente</span>
+              <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            </button>
           </div>
 
           <!-- Horizontal Date Picker Slider -->
-          <div id="booking-dates-container" class="flex items-center gap-space-xs overflow-x-auto pb-space-sm mb-space-md no-scrollbar"></div>
+          <div id="booking-dates-container" class="flex items-center gap-2 overflow-x-auto pb-2 mb-3 no-scrollbar"></div>
 
           <!-- Time Slot Status Legend -->
-          <div class="flex items-center gap-space-md mb-space-sm px-1">
+          <div class="flex items-center gap-4 mb-2.5 px-1">
             <div class="flex items-center gap-1.5">
-              <div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
-              <span class="font-label-sm text-label-sm text-outline uppercase">Seleccionado</span>
+              <div class="w-2 h-2 rounded-full bg-primary"></div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] text-outline uppercase">Seleccionado</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <div class="w-2.5 h-2.5 rounded-full bg-[#059669]"></div>
-              <span class="font-label-sm text-label-sm text-outline uppercase">Disponible</span>
+              <div class="w-2 h-2 rounded-full bg-[#059669]"></div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] text-outline uppercase">Disponible</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <div class="w-2.5 h-2.5 rounded-full bg-zinc-300"></div>
-              <span class="font-label-sm text-label-sm text-outline uppercase">Ocupado</span>
+              <div class="w-2 h-2 rounded-full bg-zinc-300"></div>
+              <span class="font-label-sm text-[9px] sm:text-[10px] text-outline uppercase">Ocupado</span>
             </div>
           </div>
 
           <!-- Time Slot Grid -->
-          <div id="booking-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-space-xs"></div>
+          <div id="booking-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
         </section>
 
         <!-- STEP 4: CONFIRMACIÓN & DATOS DEL CLIENTE -->
-        <section class="flex flex-col w-full mb-space-lg" id="step-content-4">
-          <div class="flex items-center justify-between mb-space-sm">
+        <section class="flex flex-col w-full mb-6" id="step-content-4">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex flex-col">
-              <h2 class="font-headline-md text-headline-md tracking-tight uppercase text-primary font-bold">Confirmar Cita</h2>
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Completa tus datos para registrar tu turno en tiempo real</span>
+              <h2 class="font-headline-md text-lg sm:text-xl tracking-tight uppercase text-primary font-bold">Confirmar Cita</h2>
+              <span class="font-body-sm text-xs text-on-surface-variant">Completa tus datos para registrar tu turno en tiempo real</span>
             </div>
-            <span class="font-label-sm text-label-sm uppercase text-outline tracking-widest">Paso 04/04</span>
+            <span class="font-label-sm text-[10px] uppercase text-outline tracking-widest">Paso 04/04</span>
           </div>
           <div id="booking-step4-container"></div>
         </section>
 
         <!-- Studio Policy & Hygiene Guarantee Note -->
-        <div class="flex items-center gap-space-sm surface-level-1 p-space-md rounded-xl mb-space-lg">
-          <div class="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-primary">
+        <div class="flex items-center gap-3 surface-level-1 p-3.5 sm:p-4 rounded-xl mb-6">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-primary">
             <span class="material-symbols-outlined text-[20px]">verified</span>
           </div>
-          <div class="flex flex-col">
-            <span id="studio-hygiene-title" class="font-title-md text-title-md font-bold text-primary">Protocolo S Barber Zero-Delay</span>
-            <span id="studio-hygiene-desc" class="font-body-sm text-body-sm text-on-surface-variant">Navajas esterilizadas y puntualidad exacta sin esperas en sala.</span>
+          <div class="flex flex-col min-w-0">
+            <span id="studio-hygiene-title" class="font-title-md text-sm sm:text-base font-bold text-primary">Protocolo S Barber Zero-Delay</span>
+            <span id="studio-hygiene-desc" class="font-body-sm text-xs text-on-surface-variant">Navajas esterilizadas y puntualidad exacta sin esperas en sala.</span>
           </div>
         </div>
       </section>
@@ -302,34 +306,34 @@
       <!-- ================================================================ -->
       <!-- VIEW 3: DASHBOARD / PANEL ADMINISTRATIVO                         -->
       <!-- ================================================================ -->
-      <section id="view-dashboard" class="hidden w-full">
-        <div id="admin-portal-content"></div>
+      <section id="view-dashboard" class="hidden w-full min-w-0">
+        <div id="admin-portal-content" class="w-full min-w-0"></div>
       </section>
 
       <!-- ================================================================ -->
       <!-- VIEW 4: AGENDA & CONSULTA DE CITAS                               -->
       <!-- ================================================================ -->
-      <section id="view-agenda" class="hidden w-full max-w-4xl mx-auto">
-        <div class="surface-level-1 rounded-xl p-6 mb-6">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+      <section id="view-agenda" class="hidden w-full max-w-4xl mx-auto min-w-0">
+        <div class="surface-level-1 rounded-xl p-4 sm:p-6 mb-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div>
-              <span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Autogestión de Clientes</span>
-              <h2 class="font-headline-md text-2xl text-primary font-bold uppercase">Consultar o Cancelar Mi Cita</h2>
+              <span class="font-label-sm text-[10px] uppercase tracking-widest text-outline">Autogestión de Clientes</span>
+              <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold uppercase">Consultar o Cancelar Mi Cita</h2>
               <p class="font-body-sm text-xs text-on-surface-variant mt-0.5">
                 Busca tu reserva con el código único generado al confirmar (ej. SBS-841920) o con tu número de teléfono.
               </p>
             </div>
-            <button type="button" class="btn-kult-primary text-xs shrink-0" onclick="KultApp.switchView('reservar')">
+            <button type="button" class="btn-kult-primary text-xs shrink-0 w-full sm:w-auto" onclick="KultApp.switchView('reservar')">
               <span class="material-symbols-outlined text-[16px]">add</span> Nueva Reserva
             </button>
           </div>
 
-          <form onsubmit="event.preventDefault(); KultBooking.lookupClientBookings();" class="flex flex-col sm:flex-row gap-3">
+          <form onsubmit="event.preventDefault(); KultBooking.lookupClientBookings();" class="flex flex-col sm:flex-row gap-2.5">
             <input id="agenda-lookup-input"
                    type="text"
-                   placeholder="Ingresa código (ej. SBS-841920) o teléfono (+52 55...)"
+                   placeholder="Código (ej. SBS-841920) o teléfono"
                    class="kult-input flex-1" />
-            <button type="submit" class="btn-kult-primary">
+            <button type="submit" class="btn-kult-primary w-full sm:w-auto">
               <span class="material-symbols-outlined text-[18px]">search</span> Buscar Reserva
             </button>
           </form>
@@ -342,82 +346,82 @@
   </main>
 
   <!-- FIXED FLOATING BOTTOM SUMMARY BAR -->
-  <div id="floating-booking-summary-bar" class="hidden fixed bottom-20 left-0 right-0 z-40 px-gutter-mobile">
-    <div class="max-w-2xl mx-auto surface-level-3 p-space-md rounded-xl flex items-center justify-between gap-space-md">
+  <div id="floating-booking-summary-bar" class="hidden fixed bottom-[68px] sm:bottom-20 left-0 right-0 z-40 px-3 sm:px-4">
+    <div class="max-w-2xl mx-auto surface-level-3 p-3 sm:p-4 rounded-xl flex items-center justify-between gap-2.5">
       <!-- Order Summary Meta -->
-      <div class="flex flex-col min-w-0">
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Resumen de Cita</span>
-        <span class="font-title-md text-title-md font-bold text-primary truncate" id="summary-service">Skin Fade Pro</span>
-        <div class="flex items-center gap-1.5 mt-0.5">
-          <span class="font-label-sm text-label-sm text-on-surface-variant" id="summary-barber">Mateo S.</span>
+      <div class="flex flex-col min-w-0 flex-1">
+        <span class="font-label-sm text-[9px] uppercase tracking-widest text-outline">Resumen de Cita</span>
+        <span class="font-title-md text-sm sm:text-base font-bold text-primary truncate" id="summary-service">Skin Fade Pro</span>
+        <div class="flex items-center gap-1 mt-0.5 truncate">
+          <span class="font-label-sm text-[10px] text-on-surface-variant truncate" id="summary-barber">Mateo S.</span>
           <span class="text-outline text-[10px]">•</span>
-          <span class="font-label-sm text-label-sm text-on-surface-variant" id="summary-time">Selecciona horario</span>
+          <span class="font-label-sm text-[10px] text-on-surface-variant truncate" id="summary-time">Selecciona horario</span>
         </div>
       </div>
       <!-- Action Button & Total -->
-      <div class="flex items-center gap-space-sm shrink-0">
+      <div class="flex items-center gap-2.5 shrink-0">
         <div class="flex flex-col items-end">
-          <span class="font-label-sm text-label-sm text-outline uppercase">Total</span>
-          <span class="font-title-lg text-title-lg font-extrabold text-primary leading-none" id="summary-price">$35</span>
+          <span class="font-label-sm text-[9px] text-outline uppercase">Total</span>
+          <span class="font-title-lg text-base sm:text-xl font-extrabold text-primary leading-none" id="summary-price">$35</span>
         </div>
-        <button class="h-12 px-space-md bg-primary text-on-primary hover:bg-primary-container font-label-lg text-label-lg uppercase tracking-wider rounded-lg font-bold flex items-center gap-1.5 transition-transform active:scale-95 shadow-md"
+        <button class="h-10 sm:h-11 px-3.5 sm:px-4 bg-primary text-on-primary hover:bg-primary-container font-label-lg text-xs uppercase tracking-wider rounded-lg font-bold flex items-center gap-1 transition-transform active:scale-95 shadow-md"
                 id="cta-button"
                 onclick="KultBooking.handleFloatingContinue()"
                 type="button">
           <span>Continuar</span>
-          <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- BOTTOM NAVIGATION BAR (White Surface) -->
+  <!-- BOTTOM NAVIGATION BAR -->
   <nav class="fixed bottom-0 w-full z-50 pb-safe bg-white/95 backdrop-blur-xl border-t border-zinc-200 shadow-[0_-2px_12px_rgba(0,0,0,0.04)]">
-    <div class="max-w-2xl mx-auto flex justify-around items-center h-20 px-space-xs">
+    <div class="max-w-2xl mx-auto grid grid-cols-4 items-center h-16 px-1">
       <button id="nav-item-inicio"
               type="button"
               onclick="KultApp.switchView('inicio')"
-              class="flex flex-col items-center justify-center gap-1 min-w-[4.25rem] min-h-[44px] py-1 transition-all text-primary scale-105 font-bold">
-        <span class="material-symbols-outlined text-[24px]">auto_awesome</span>
-        <span class="font-label-sm text-label-sm tracking-widest uppercase">Inicio</span>
+              class="flex flex-col items-center justify-center gap-0.5 py-1 transition-all text-primary font-bold">
+        <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+        <span class="font-label-sm text-[9px] tracking-wider uppercase truncate">Inicio</span>
       </button>
       <button id="nav-item-reservar"
               type="button"
               onclick="KultApp.switchView('reservar')"
-              class="flex flex-col items-center justify-center gap-1 min-w-[4.25rem] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-all">
-        <span class="material-symbols-outlined text-[24px]">edit_calendar</span>
-        <span class="font-label-sm text-label-sm tracking-widest uppercase">Reservar</span>
+              class="flex flex-col items-center justify-center gap-0.5 py-1 text-on-surface-variant hover:text-on-surface transition-all">
+        <span class="material-symbols-outlined text-[22px]">edit_calendar</span>
+        <span class="font-label-sm text-[9px] tracking-wider uppercase truncate">Reservar</span>
       </button>
       <button id="nav-item-dashboard"
               type="button"
               onclick="KultApp.switchView('dashboard')"
-              class="flex flex-col items-center justify-center gap-1 min-w-[4.25rem] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-all">
-        <span class="material-symbols-outlined text-[24px]">grid_view</span>
-        <span class="font-label-sm text-label-sm tracking-widest uppercase">Dashboard</span>
+              class="flex flex-col items-center justify-center gap-0.5 py-1 text-on-surface-variant hover:text-on-surface transition-all">
+        <span class="material-symbols-outlined text-[22px]">grid_view</span>
+        <span class="font-label-sm text-[9px] tracking-wider uppercase truncate">Dashboard</span>
       </button>
       <button id="nav-item-agenda"
               type="button"
               onclick="KultApp.switchView('agenda')"
-              class="flex flex-col items-center justify-center gap-1 min-w-[4.25rem] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-all">
-        <span class="material-symbols-outlined text-[24px]">schedule</span>
-        <span class="font-label-sm text-label-sm tracking-widest uppercase">Agenda</span>
+              class="flex flex-col items-center justify-center gap-0.5 py-1 text-on-surface-variant hover:text-on-surface transition-all">
+        <span class="material-symbols-outlined text-[22px]">schedule</span>
+        <span class="font-label-sm text-[9px] tracking-wider uppercase truncate">Agenda</span>
       </button>
     </div>
   </nav>
 
   <!-- TOAST NOTIFICATIONS CONTAINER -->
-  <div id="toast-container" class="fixed top-20 right-4 z-[80] flex flex-col gap-2"></div>
+  <div id="toast-container" class="fixed top-16 right-3 left-3 sm:left-auto sm:right-4 z-[80] flex flex-col gap-2 items-end pointer-events-none"></div>
 
   <!-- GENERIC ADMIN / LIGHTBOX MODAL -->
-  <div id="generic-admin-modal" class="hidden fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm items-center justify-center p-4 overflow-y-auto">
-    <div id="generic-admin-modal-content" class="surface-level-3 rounded-xl p-6 w-full max-w-2xl border border-zinc-200 my-8"></div>
+  <div id="generic-admin-modal" class="hidden fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+    <div id="generic-admin-modal-content" class="surface-level-3 rounded-t-2xl sm:rounded-xl p-4 sm:p-6 w-full max-w-2xl border border-zinc-200 max-h-[90dvh] overflow-y-auto"></div>
   </div>
 
   <!-- CONFIRMATION DIALOG MODAL -->
   <div id="confirm-dialog-modal" class="hidden fixed inset-0 z-[75] bg-black/50 backdrop-blur-sm items-center justify-center p-4">
-    <div class="surface-level-3 rounded-xl p-6 w-full max-w-md border border-zinc-200">
+    <div class="surface-level-3 rounded-xl p-5 sm:p-6 w-full max-w-md border border-zinc-200">
       <h3 id="confirm-dialog-title" class="font-headline-md text-lg text-primary font-bold uppercase mb-2">Confirmar Acción</h3>
-      <p id="confirm-dialog-message" class="font-body-sm text-sm text-on-surface-variant mb-6"></p>
+      <p id="confirm-dialog-message" class="font-body-sm text-sm text-on-surface-variant mb-5"></p>
       <div class="flex items-center justify-end gap-2">
         <button id="confirm-dialog-cancel" type="button" class="btn-kult-secondary py-2 px-4">Volver</button>
         <button id="confirm-dialog-ok" type="button" class="btn-kult-primary py-2 px-4">Confirmar</button>
@@ -426,10 +430,10 @@
   </div>
 
   <!-- APPLICATION SCRIPTS -->
-  <script src="/js/api.js?v=20261122c"></script>
-  <script src="/js/store.js?v=20261122c"></script>
-  <script src="/js/booking.js?v=20261122c"></script>
-  <script src="/js/admin.js?v=20261122c"></script>
-  <script src="/js/app.js?v=20261122c"></script>
+  <script src="/js/api.js?v=20261122d"></script>
+  <script src="/js/store.js?v=20261122d"></script>
+  <script src="/js/booking.js?v=20261122d"></script>
+  <script src="/js/admin.js?v=20261122d"></script>
+  <script src="/js/app.js?v=20261122d"></script>
 </body>
 </html>

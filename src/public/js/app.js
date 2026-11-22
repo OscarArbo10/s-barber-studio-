@@ -1,5 +1,5 @@
 /**
- * S BARBER STUDIO — Main Application Controller & Barber Work Showcase (Inicio — Light Theme)
+ * S BARBER STUDIO — Main Application Controller & Barber Work Showcase (Inicio — Mobile & Desktop Responsive)
  */
 
 const KultApp = {
@@ -87,9 +87,9 @@ const KultApp = {
       const navLink = document.getElementById(`nav-item-${v}`);
       if (navLink) {
         if (v === viewName) {
-          navLink.className = 'flex flex-col items-center justify-center gap-1 min-w-[4.25rem] min-h-[44px] py-1 transition-all text-primary scale-105 font-bold';
+          navLink.className = 'flex flex-col items-center justify-center gap-0.5 py-1 transition-all text-primary font-bold';
         } else {
-          navLink.className = 'flex flex-col items-center justify-center gap-1 min-w-[4.25rem] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-all';
+          navLink.className = 'flex flex-col items-center justify-center gap-0.5 py-1 text-on-surface-variant hover:text-on-surface transition-all';
         }
       }
 
@@ -171,7 +171,7 @@ const KultApp = {
   },
 
   // ============================================================================
-  // INICIO MODULE: BARBER WORK SHOWCASE (VIDEOS & PHOTOS — WHITE THEME)
+  // INICIO MODULE: BARBER WORK SHOWCASE (VIDEOS & PHOTOS — MOBILE FIRST)
   // ============================================================================
   setPortfolioFilter(key, value) {
     KultStore.portfolioFilters[key] = value;
@@ -213,12 +213,12 @@ const KultApp = {
       });
       video.play().catch(() => {});
       if (btnEl) {
-        btnEl.innerHTML = `<span class="material-symbols-outlined text-[24px]">pause</span>`;
+        btnEl.innerHTML = `<span class="material-symbols-outlined text-[20px]">pause</span>`;
       }
     } else {
       video.pause();
       if (btnEl) {
-        btnEl.innerHTML = `<span class="material-symbols-outlined text-[24px]">play_arrow</span>`;
+        btnEl.innerHTML = `<span class="material-symbols-outlined text-[20px]">play_arrow</span>`;
       }
     }
   },
@@ -247,67 +247,67 @@ const KultApp = {
     const symbol = (KultStore.settings && KultStore.settings.currency_symbol) || '$';
 
     content.innerHTML = `
-      <div class="flex items-center justify-between pb-3 mb-4 border-b border-zinc-200">
-        <div class="flex items-center gap-3">
-          <img src="${KultUI.escapeHtml(item.barber_avatar)}" alt="${KultUI.escapeHtml(item.barber_name)}" class="w-10 h-10 rounded-full object-cover border border-zinc-300" />
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-title-md text-sm text-primary font-bold">${KultUI.escapeHtml(item.barber_name)}</span>
-              <span class="px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200 font-label-sm text-[10px] uppercase">
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-200">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <img src="${KultUI.escapeHtml(item.barber_avatar)}" alt="${KultUI.escapeHtml(item.barber_name)}" class="w-9 h-9 rounded-full object-cover border border-zinc-300 shrink-0" />
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-title-md text-sm text-primary font-bold truncate">${KultUI.escapeHtml(item.barber_name)}</span>
+              <span class="px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200 font-label-sm text-[9px] uppercase">
                 ${KultUI.escapeHtml(item.barber_specialty)}
               </span>
             </div>
-            <span class="font-label-sm text-[10px] uppercase text-outline">${item.media_type === 'video' ? 'Video Reel en Estudio' : 'Fotografía Editorial'} · ${KultUI.escapeHtml(item.technique_tag || '')}</span>
+            <span class="font-label-sm text-[9px] uppercase text-outline block truncate">${item.media_type === 'video' ? 'Video Reel' : 'Fotografía'} · ${KultUI.escapeHtml(item.technique_tag || '')}</span>
           </div>
         </div>
-        <button type="button" class="text-zinc-500 hover:text-zinc-900 p-1" onclick="KultApp.closeLightbox()">
+        <button type="button" class="text-zinc-500 hover:text-zinc-900 p-1 shrink-0" onclick="KultApp.closeLightbox()">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
 
-      <div class="rounded-lg overflow-hidden bg-zinc-950 border border-zinc-200 mb-4 flex items-center justify-center max-h-[65vh]">
+      <div class="rounded-lg overflow-hidden bg-zinc-950 border border-zinc-200 mb-3 flex items-center justify-center max-h-[55vh] sm:max-h-[62vh]">
         ${item.media_type === 'video' ? `
           <video src="${KultUI.escapeHtml(item.media_url)}"
                  poster="${KultUI.escapeHtml(item.thumbnail_url || '')}"
                  controls
                  autoplay
                  playsinline
-                 class="w-full max-h-[62vh] object-contain bg-black"></video>
+                 class="w-full max-h-[55vh] sm:max-h-[62vh] object-contain bg-black"></video>
         ` : `
           <img src="${KultUI.escapeHtml(item.media_url)}"
                alt="${KultUI.escapeHtml(item.title)}"
-               class="w-full max-h-[62vh] object-contain" />
+               class="w-full max-h-[55vh] sm:max-h-[62vh] object-contain" />
         `}
       </div>
 
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="space-y-1 flex-1">
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-primary font-label-sm text-[10px] uppercase">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="space-y-1 flex-1 min-w-0">
+          <div class="flex items-center flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-primary font-label-sm text-[9px] uppercase">
               ${KultUI.escapeHtml(item.technique_tag || 'S Barber Craft')}
             </span>
             ${item.service_name ? `
-              <span class="font-label-sm text-xs text-[#059669] font-bold">
-                Servicio: ${KultUI.escapeHtml(item.service_name)} (${KultUI.formatPrice(item.service_price, symbol)})
+              <span class="font-label-sm text-[11px] text-[#059669] font-bold">
+                ${KultUI.escapeHtml(item.service_name)} (${KultUI.formatPrice(item.service_price, symbol)})
               </span>
             ` : ''}
           </div>
-          <h3 class="font-headline-md text-xl text-primary font-bold uppercase">${KultUI.escapeHtml(item.title)}</h3>
+          <h3 class="font-headline-md text-base sm:text-xl text-primary font-bold uppercase">${KultUI.escapeHtml(item.title)}</h3>
           <p class="font-body-sm text-xs text-on-surface-variant">${KultUI.escapeHtml(item.description)}</p>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
           <button type="button"
                   onclick="KultApp.likePortfolio(${item.id}, event)"
                   class="btn-kult-secondary py-2.5 px-3.5">
-            <span class="material-symbols-outlined text-[17px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+            <span class="material-symbols-outlined text-[17px] text-red-600" style="font-variation-settings: 'FILL' 1;">favorite</span>
             <span>${item.likes_count || 0}</span>
           </button>
           <button type="button"
                   onclick="KultApp.bookFromPortfolio(${item.id})"
-                  class="btn-kult-primary py-2.5 px-5">
+                  class="btn-kult-primary py-2.5 px-4 flex-1 sm:flex-initial">
             <span>Reservar este Estilo</span>
-            <span class="material-symbols-outlined text-[18px]">event_available</span>
+            <span class="material-symbols-outlined text-[17px]">event_available</span>
           </button>
         </div>
       </div>
@@ -357,62 +357,62 @@ const KultApp = {
       <!-- ================================================================== -->
       <!-- 1. HERO SHOWCASE: FEATURED BARBER REEL & LOOKBOOK INTRO            -->
       <!-- ================================================================== -->
-      <div class="kult-grid items-stretch pb-8 mb-8 border-b border-zinc-200">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 pb-6 mb-6 border-b border-zinc-200">
         <!-- Left Column: Editorial Statement & Barber Stories Strip -->
-        <div class="col-span-4 md:col-span-4 lg:col-span-6 flex flex-col justify-between space-y-6">
-          <div class="space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200">
-              <span class="status-pip-avail"></span>
-              <span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">
+        <div class="lg:col-span-6 flex flex-col justify-between space-y-4 min-w-0">
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 max-w-full">
+              <span class="status-pip-avail shrink-0"></span>
+              <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-primary truncate">
                 S BARBER STUDIO · ${totalVideos} Videos &amp; ${totalImages} Fotos Reales
               </span>
             </div>
 
-            <h1 class="font-headline-2xl-mobile md:font-headline-xl lg:font-headline-2xl text-3xl md:text-5xl font-extrabold uppercase tracking-tight text-primary leading-[1.05]">
-              TRABAJO DE AUTOR EN VIDEOS Y FOTOGRAFÍAS.
+            <h1 class="font-headline-xl text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-primary leading-[1.08] break-words">
+              TRABAJO DE AUTOR EN VIDEOS Y FOTOS.
             </h1>
 
-            <p class="font-body-md text-sm md:text-base text-on-surface-variant max-w-xl">
-              Conoce el trabajo real de nuestros barberos en <strong>S BARBER STUDIO</strong>: sesiones en video, degradados milimétricos, corte a tijera y rituales de navaja. Elige el estilo que buscas y reserva directamente con el especialista.
+            <p class="font-body-sm sm:font-body-md text-xs sm:text-sm text-on-surface-variant">
+              Explora las sesiones en video, degradados milimétricos, corte a tijera y rituales de navaja de nuestros barberos. Elige tu estilo y agenda directamente con el autor.
             </p>
 
-            <div class="flex flex-wrap items-center gap-2.5 pt-1">
-              <button type="button" class="btn-kult-primary py-3 px-5" onclick="KultApp.switchView('reservar')">
-                <span>Agendar Mi Sesión</span>
-                <span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+            <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 pt-1">
+              <button type="button" class="btn-kult-primary py-2.5 px-3 sm:px-5 text-[11px] sm:text-xs" onclick="KultApp.switchView('reservar')">
+                <span>Agendar Cita</span>
+                <span class="material-symbols-outlined text-[16px]">calendar_add_on</span>
               </button>
-              <button type="button" class="btn-kult-secondary py-3 px-4" onclick="KultApp.openUploadWorkShortcut()">
-                <span class="material-symbols-outlined text-[17px]">upload_file</span>
-                <span>${KultStore.user ? 'Subir Foto / Video' : 'Subir Trabajo (Barberos)'}</span>
+              <button type="button" class="btn-kult-secondary py-2.5 px-3 sm:px-4 text-[11px] sm:text-xs" onclick="KultApp.openUploadWorkShortcut()">
+                <span class="material-symbols-outlined text-[16px]">upload_file</span>
+                <span>Subir Trabajo</span>
               </button>
             </div>
           </div>
 
-          <!-- Barber Filter Avatars (Click to inspect each barber's photos & videos) -->
-          <div class="surface-level-1 rounded-xl p-4 border border-zinc-200">
-            <div class="flex items-center justify-between mb-3">
-              <span class="kult-label m-0">Filtrar Portafolio por Barbero Especialista</span>
+          <!-- Barber Filter Avatars -->
+          <div class="surface-level-1 rounded-xl p-3 sm:p-4 border border-zinc-200 min-w-0">
+            <div class="flex items-center justify-between mb-2">
+              <span class="kult-label m-0">Filtrar por Barbero Especialista</span>
               ${filters.barberId !== 'all' ? `
                 <button type="button" onclick="KultApp.setPortfolioFilter('barberId', 'all')" class="font-label-sm text-[10px] uppercase text-primary underline">
                   Ver Todos
                 </button>
               ` : ''}
             </div>
-            <div class="flex items-center gap-3 overflow-x-auto pb-1 no-scrollbar">
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
               <!-- All Barbers Pill -->
               <button type="button"
                       onclick="KultApp.setPortfolioFilter('barberId', 'all')"
-                      class="flex items-center gap-2.5 px-3 py-2 rounded-lg shrink-0 transition-all border ${
+                      class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg shrink-0 transition-all border ${
                         filters.barberId === 'all'
-                          ? 'bg-primary text-on-primary border-primary font-bold shadow-md'
+                          ? 'bg-primary text-on-primary border-primary font-bold shadow-sm'
                           : 'bg-zinc-50 text-on-surface border-zinc-200 hover:border-zinc-400'
                       }">
-                <div class="w-9 h-9 rounded-full ${filters.barberId === 'all' ? 'bg-white text-primary' : 'bg-zinc-200 text-primary'} flex items-center justify-center">
-                  <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                <div class="w-8 h-8 rounded-full ${filters.barberId === 'all' ? 'bg-white text-primary' : 'bg-zinc-200 text-primary'} flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[16px]">grid_view</span>
                 </div>
                 <div class="text-left">
-                  <span class="font-title-md text-xs font-bold block leading-tight">Todo el Equipo</span>
-                  <span class="font-label-sm text-[10px] ${filters.barberId === 'all' ? 'text-white/80' : 'text-outline'} uppercase">${allItems.length} piezas</span>
+                  <span class="font-title-md text-xs font-bold block leading-tight">Todos</span>
+                  <span class="font-label-sm text-[9px] ${filters.barberId === 'all' ? 'text-white/80' : 'text-outline'} uppercase">${allItems.length} items</span>
                 </div>
               </button>
 
@@ -422,15 +422,15 @@ const KultApp = {
                 return `
                   <button type="button"
                           onclick="KultApp.setPortfolioFilter('barberId', ${b.id})"
-                          class="flex items-center gap-2.5 px-3 py-2 rounded-lg shrink-0 transition-all border ${
+                          class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg shrink-0 transition-all border ${
                             isSelected
-                              ? 'bg-primary text-on-primary border-primary font-bold shadow-md'
+                              ? 'bg-primary text-on-primary border-primary font-bold shadow-sm'
                               : 'bg-zinc-50 text-on-surface border-zinc-200 hover:border-zinc-400'
                           }">
-                    <img src="${KultUI.escapeHtml(b.avatar_url)}" alt="${KultUI.escapeHtml(b.name)}" class="w-9 h-9 rounded-full object-cover border ${isSelected ? 'border-white' : 'border-zinc-300'}" />
+                    <img src="${KultUI.escapeHtml(b.avatar_url)}" alt="${KultUI.escapeHtml(b.name)}" class="w-8 h-8 rounded-full object-cover border ${isSelected ? 'border-white' : 'border-zinc-300'} shrink-0" />
                     <div class="text-left">
                       <span class="font-title-md text-xs font-bold block leading-tight">${KultUI.escapeHtml(b.name)}</span>
-                      <span class="font-label-sm text-[10px] ${isSelected ? 'text-white/80' : 'text-outline'} uppercase">${KultUI.escapeHtml(b.specialty)} · ${count}</span>
+                      <span class="font-label-sm text-[9px] ${isSelected ? 'text-white/80' : 'text-outline'} uppercase">${KultUI.escapeHtml(b.specialty)} · ${count}</span>
                     </div>
                   </button>
                 `;
@@ -439,11 +439,11 @@ const KultApp = {
           </div>
         </div>
 
-        <!-- Right Column: Featured Video Reel Showcase -->
-        <div class="col-span-4 md:col-span-4 lg:col-span-6">
+        <!-- Right Column: Featured Video Reel Showcase (Clean non-overlapping footer on mobile) -->
+        <div class="lg:col-span-6 min-w-0">
           ${featuredVideo ? `
-            <div class="surface-level-1 rounded-xl overflow-hidden border border-zinc-200 h-full flex flex-col justify-between relative group shadow-md">
-              <div class="relative w-full h-72 sm:h-80 lg:h-96 bg-zinc-950 overflow-hidden">
+            <div class="surface-level-1 rounded-xl overflow-hidden border border-zinc-200 flex flex-col justify-between shadow-sm">
+              <div class="relative w-full h-56 sm:h-72 bg-zinc-950 overflow-hidden">
                 ${featuredVideo.media_type === 'video' ? `
                   <video id="hero-featured-video"
                          class="kult-portfolio-video w-full h-full object-cover"
@@ -458,62 +458,62 @@ const KultApp = {
                        alt="${KultUI.escapeHtml(featuredVideo.title)}"
                        class="w-full h-full object-cover" />
                 `}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30 pointer-events-none"></div>
 
-                <!-- Top Badges on Featured Reel -->
-                <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-1 rounded bg-white text-zinc-900 font-label-sm text-[10px] uppercase tracking-widest font-bold flex items-center gap-1 shadow">
-                      <span class="material-symbols-outlined text-[14px]">videocam</span> Reel Destacado
-                    </span>
-                    <span class="px-2.5 py-1 rounded bg-black/70 backdrop-blur-md text-white border border-white/20 font-label-sm text-[10px] uppercase">
-                      ${KultUI.escapeHtml(featuredVideo.technique_tag || 'Master Session')}
-                    </span>
-                  </div>
+                <!-- Top Controls on Featured Reel -->
+                <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                  <span class="px-2 py-1 rounded bg-white text-zinc-900 font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider font-bold flex items-center gap-1 shadow">
+                    <span class="material-symbols-outlined text-[13px]">videocam</span> Reel Destacado
+                  </span>
 
                   ${featuredVideo.media_type === 'video' ? `
                     <div class="flex items-center gap-1.5">
                       <button type="button"
                               title="Activar/Silenciar Audio"
                               onclick="KultApp.toggleVideoMute('hero-featured-video', this, event)"
-                              class="w-9 h-9 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                        <span class="material-symbols-outlined text-[18px]">volume_off</span>
+                              class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                        <span class="material-symbols-outlined text-[16px]">volume_off</span>
                       </button>
                       <button type="button"
                               title="Pausar/Reproducir"
                               onclick="KultApp.toggleInlineVideo('hero-featured-video', this, event)"
-                              class="w-9 h-9 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                        <span class="material-symbols-outlined text-[20px]">pause</span>
+                              class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                        <span class="material-symbols-outlined text-[18px]">pause</span>
                       </button>
                       <button type="button"
                               title="Pantalla Completa"
                               onclick="KultApp.openLightbox(${featuredVideo.id}, event)"
-                              class="w-9 h-9 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                        <span class="material-symbols-outlined text-[18px]">open_in_full</span>
+                              class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                        <span class="material-symbols-outlined text-[16px]">open_in_full</span>
                       </button>
                     </div>
                   ` : ''}
                 </div>
 
-                <!-- Bottom Info Overlay inside Featured Reel -->
-                <div class="absolute bottom-3.5 left-4 right-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <img src="${KultUI.escapeHtml(featuredVideo.barber_avatar)}" alt="${KultUI.escapeHtml(featuredVideo.barber_name)}" class="w-6 h-6 rounded-full object-cover border border-white" />
-                      <span class="font-label-sm text-xs text-white font-bold uppercase">${KultUI.escapeHtml(featuredVideo.barber_name)}</span>
-                      <span class="text-white/60 text-xs">•</span>
-                      <span class="font-label-sm text-[11px] text-[#34D399]">${KultUI.escapeHtml(featuredVideo.barber_specialty)}</span>
-                    </div>
-                    <h2 class="font-headline-md text-xl text-white font-bold uppercase leading-snug">${KultUI.escapeHtml(featuredVideo.title)}</h2>
-                    <p class="font-body-sm text-xs text-zinc-200 line-clamp-2 max-w-md mt-0.5">${KultUI.escapeHtml(featuredVideo.description)}</p>
+                <!-- Author pill bottom-left of video -->
+                <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2">
+                    <img src="${KultUI.escapeHtml(featuredVideo.barber_avatar)}" alt="${KultUI.escapeHtml(featuredVideo.barber_name)}" class="w-6 h-6 rounded-full object-cover border border-white" />
+                    <span class="font-label-sm text-[11px] text-white font-bold uppercase">${KultUI.escapeHtml(featuredVideo.barber_name)}</span>
                   </div>
-                  <button type="button"
-                          onclick="KultApp.bookFromPortfolio(${featuredVideo.id})"
-                          class="px-4 py-2.5 rounded-lg bg-white text-zinc-900 hover:bg-zinc-100 font-label-md text-xs uppercase font-bold flex items-center gap-1.5 shrink-0 shadow-lg transition-all">
-                    <span>Reservar este Look</span>
-                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                  </button>
+                  <span class="px-2 py-0.5 rounded bg-black/70 text-white border border-white/20 font-label-sm text-[9px] uppercase">
+                    ${KultUI.escapeHtml(featuredVideo.technique_tag || 'Master Session')}
+                  </span>
                 </div>
+              </div>
+
+              <!-- Clean White Footer below video so text never collides on mobile -->
+              <div class="p-3.5 sm:p-4 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <h2 class="font-title-md text-sm sm:text-base text-primary font-bold uppercase leading-snug truncate">${KultUI.escapeHtml(featuredVideo.title)}</h2>
+                  <p class="font-body-sm text-xs text-on-surface-variant line-clamp-1 mt-0.5">${KultUI.escapeHtml(featuredVideo.description)}</p>
+                </div>
+                <button type="button"
+                        onclick="KultApp.bookFromPortfolio(${featuredVideo.id})"
+                        class="btn-kult-primary py-2 px-3.5 text-xs shrink-0 w-full sm:w-auto">
+                  <span>Reservar este Look</span>
+                  <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                </button>
               </div>
             </div>
           ` : ''}
@@ -524,23 +524,23 @@ const KultApp = {
       <!-- 2. ACTIVE BARBER SPOTLIGHT BANNER (WHEN FILTERED BY A BARBER)      -->
       <!-- ================================================================== -->
       ${selectedBarberObj ? `
-        <div class="surface-level-2 rounded-xl p-5 mb-6 border border-zinc-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <img src="${KultUI.escapeHtml(selectedBarberObj.avatar_url)}" alt="${KultUI.escapeHtml(selectedBarberObj.name)}" class="w-16 h-16 rounded-full object-cover border-2 border-zinc-900" />
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="font-headline-md text-xl text-primary font-bold uppercase">Portafolio de ${KultUI.escapeHtml(selectedBarberObj.name)}</h3>
-                <span class="px-2.5 py-0.5 rounded-full bg-zinc-900 text-white font-label-sm text-[10px] uppercase font-bold">
+        <div class="surface-level-2 rounded-xl p-4 mb-5 border border-zinc-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <img src="${KultUI.escapeHtml(selectedBarberObj.avatar_url)}" alt="${KultUI.escapeHtml(selectedBarberObj.name)}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-zinc-900 shrink-0" />
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-headline-md text-base sm:text-lg text-primary font-bold uppercase">${KultUI.escapeHtml(selectedBarberObj.name)}</h3>
+                <span class="px-2 py-0.5 rounded-full bg-zinc-900 text-white font-label-sm text-[9px] uppercase font-bold">
                   ★ ${Number(selectedBarberObj.rating).toFixed(1)}
                 </span>
               </div>
-              <span class="font-label-sm text-xs uppercase text-[#059669] font-bold block">${KultUI.escapeHtml(selectedBarberObj.specialty)}</span>
-              <p class="font-body-sm text-xs text-on-surface-variant mt-1 max-w-2xl">${KultUI.escapeHtml(selectedBarberObj.bio)}</p>
+              <span class="font-label-sm text-[10px] uppercase text-[#059669] font-bold block">${KultUI.escapeHtml(selectedBarberObj.specialty)}</span>
+              <p class="font-body-sm text-xs text-on-surface-variant mt-0.5 line-clamp-2">${KultUI.escapeHtml(selectedBarberObj.bio)}</p>
             </div>
           </div>
-          <button type="button" class="btn-kult-primary shrink-0" onclick="KultApp.quickBookBarber(${selectedBarberObj.id})">
-            <span>Reservar Sillón con ${KultUI.escapeHtml(selectedBarberObj.name.split(' ')[0])}</span>
-            <span class="material-symbols-outlined text-[18px]">event_available</span>
+          <button type="button" class="btn-kult-primary text-xs shrink-0 w-full sm:w-auto" onclick="KultApp.quickBookBarber(${selectedBarberObj.id})">
+            <span>Reservar con ${KultUI.escapeHtml(selectedBarberObj.name.split(' ')[0])}</span>
+            <span class="material-symbols-outlined text-[16px]">event_available</span>
           </button>
         </div>
       ` : ''}
@@ -548,45 +548,45 @@ const KultApp = {
       <!-- ================================================================== -->
       <!-- 3. FILTER CONTROLS: VIDEOS / PHOTOS & SPECIALTY CATEGORIES         -->
       <!-- ================================================================== -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <!-- Media Type Filter Tabs (Todo | Videos | Fotos) -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 mb-5 min-w-0">
+        <!-- Media Type Filter Tabs -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar min-w-0">
           <button type="button"
                   onclick="KultApp.setPortfolioFilter('mediaType', 'all')"
-                  class="px-4 py-2 rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center gap-2 shrink-0 transition-all ${
+                  class="px-3 py-1.5 rounded-lg font-label-md text-[11px] uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-all ${
                     filters.mediaType === 'all'
                       ? 'bg-primary text-on-primary font-bold shadow-sm'
                       : 'surface-level-1 text-on-surface-variant hover:text-primary'
                   }">
-            <span class="material-symbols-outlined text-[17px]">perm_media</span>
+            <span class="material-symbols-outlined text-[15px]">perm_media</span>
             <span>Todo (${allItems.length})</span>
           </button>
           <button type="button"
                   onclick="KultApp.setPortfolioFilter('mediaType', 'video')"
-                  class="px-4 py-2 rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center gap-2 shrink-0 transition-all ${
+                  class="px-3 py-1.5 rounded-lg font-label-md text-[11px] uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-all ${
                     filters.mediaType === 'video'
                       ? 'bg-primary text-on-primary font-bold shadow-sm'
                       : 'surface-level-1 text-on-surface-variant hover:text-primary'
                   }">
-            <span class="material-symbols-outlined text-[17px]">movie</span>
-            <span>Videos &amp; Reels (${totalVideos})</span>
+            <span class="material-symbols-outlined text-[15px]">movie</span>
+            <span>Videos (${totalVideos})</span>
           </button>
           <button type="button"
                   onclick="KultApp.setPortfolioFilter('mediaType', 'image')"
-                  class="px-4 py-2 rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center gap-2 shrink-0 transition-all ${
+                  class="px-3 py-1.5 rounded-lg font-label-md text-[11px] uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-all ${
                     filters.mediaType === 'image'
                       ? 'bg-primary text-on-primary font-bold shadow-sm'
                       : 'surface-level-1 text-on-surface-variant hover:text-primary'
                   }">
-            <span class="material-symbols-outlined text-[17px]">photo_camera</span>
-            <span>Fotografías (${totalImages})</span>
+            <span class="material-symbols-outlined text-[15px]">photo_camera</span>
+            <span>Fotos (${totalImages})</span>
           </button>
         </div>
 
         <!-- Category Filter Pills -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar min-w-0">
           ${[
-            { slug: 'all', name: 'Todas las Categorías' },
+            { slug: 'all', name: 'Todas' },
             { slug: 'cortes', name: 'Cortes & Fades' },
             { slug: 'barba', name: 'Barba & Navaja' },
             { slug: 'combos', name: 'Combos VIP' },
@@ -596,7 +596,7 @@ const KultApp = {
             return `
               <button type="button"
                       onclick="KultApp.setPortfolioFilter('category', '${cat.slug}')"
-                      class="px-3 py-1.5 rounded-full font-label-sm text-[11px] uppercase tracking-wider shrink-0 transition-all ${
+                      class="px-3 py-1 rounded-full font-label-sm text-[10px] uppercase tracking-wider shrink-0 transition-all ${
                         isActive
                           ? 'bg-zinc-900 text-white font-bold shadow-sm'
                           : 'bg-zinc-100 text-on-surface-variant hover:text-zinc-900 border border-zinc-200'
@@ -612,25 +612,25 @@ const KultApp = {
       <!-- 4. PORTFOLIO GALLERY GRID (VIDEOS & PHOTOS)                        -->
       <!-- ================================================================== -->
       ${filteredItems.length === 0 ? `
-        <div class="surface-level-1 rounded-xl p-10 text-center space-y-3 mb-10">
-          <span class="material-symbols-outlined text-[36px] text-outline">video_library</span>
-          <h3 class="font-headline-md text-lg text-primary font-bold uppercase">No hay fotos o videos con este filtro</h3>
-          <p class="font-body-sm text-xs text-on-surface-variant">Prueba seleccionando otro barbero o categoría para explorar todo el portafolio.</p>
+        <div class="surface-level-1 rounded-xl p-8 text-center space-y-3 mb-8">
+          <span class="material-symbols-outlined text-[32px] text-outline">video_library</span>
+          <h3 class="font-headline-md text-base text-primary font-bold uppercase">No hay fotos o videos con este filtro</h3>
+          <p class="font-body-sm text-xs text-on-surface-variant">Prueba seleccionando otro barbero o categoría.</p>
           <button type="button" class="btn-kult-secondary text-xs" onclick="KultApp.resetPortfolioFilters()">
-            Mostrar Todo el Portafolio
+            Mostrar Todo
           </button>
         </div>
       ` : `
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           ${filteredItems.map(item => {
             const isVideo = item.media_type === 'video';
             const videoDomId = `portfolio-vid-${item.id}`;
             const isLiked = localStorage.getItem(`kult_liked_${item.id}`) === '1';
 
             return `
-              <article class="bg-white rounded-xl overflow-hidden border border-zinc-200 hover:border-zinc-400 shadow-sm hover:shadow-md flex flex-col justify-between transition-all group">
+              <article class="bg-white rounded-xl overflow-hidden border border-zinc-200 hover:border-zinc-400 shadow-sm flex flex-col justify-between transition-all group min-w-0">
                 <!-- Media Frame -->
-                <div class="relative w-full h-72 bg-zinc-900 overflow-hidden cursor-pointer"
+                <div class="relative w-full h-60 sm:h-64 bg-zinc-900 overflow-hidden cursor-pointer"
                      onclick="KultApp.openLightbox(${item.id}, event)">
                   ${isVideo ? `
                     <video id="${videoDomId}"
@@ -650,77 +650,77 @@ const KultApp = {
                   <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent pointer-events-none"></div>
 
                   <!-- Top Left Media Type Badge -->
-                  <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                    <span class="px-2.5 py-1 rounded ${
+                  <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                    <span class="px-2 py-0.5 rounded ${
                       isVideo ? 'bg-white text-zinc-900 font-bold shadow' : 'bg-black/75 text-white border border-white/20'
-                    } font-label-sm text-[10px] uppercase tracking-wider flex items-center gap-1">
-                      <span class="material-symbols-outlined text-[13px]">${isVideo ? 'videocam' : 'photo_camera'}</span>
+                    } font-label-sm text-[9px] uppercase tracking-wider flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[12px]">${isVideo ? 'videocam' : 'photo_camera'}</span>
                       ${isVideo ? 'Video' : 'Foto'}
                     </span>
                     ${item.duration_label ? `
-                      <span class="px-2 py-1 rounded bg-white/90 text-zinc-900 font-mono font-bold text-[10px] shadow">
+                      <span class="px-1.5 py-0.5 rounded bg-white/90 text-zinc-900 font-mono font-bold text-[9px] shadow">
                         ${KultUI.escapeHtml(item.duration_label)}
                       </span>
                     ` : ''}
                   </div>
 
                   <!-- Top Right Play / Expand Controls -->
-                  <div class="absolute top-3 right-3 flex items-center gap-1.5">
+                  <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5">
                     ${isVideo ? `
                       <button type="button"
                               title="Reproducir / Pausar Video"
                               onclick="KultApp.toggleInlineVideo('${videoDomId}', this, event)"
-                              class="w-9 h-9 rounded-full bg-white text-zinc-900 hover:scale-105 flex items-center justify-center shadow-lg transition-all">
-                        <span class="material-symbols-outlined text-[22px]">play_arrow</span>
+                              class="w-8 h-8 rounded-full bg-white text-zinc-900 hover:scale-105 flex items-center justify-center shadow-lg transition-all">
+                        <span class="material-symbols-outlined text-[20px]">play_arrow</span>
                       </button>
                     ` : ''}
                     <button type="button"
-                            title="Ampliar en Pantalla Completa"
+                            title="Ampliar"
                             onclick="KultApp.openLightbox(${item.id}, event)"
-                            class="w-9 h-9 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                      <span class="material-symbols-outlined text-[17px]">open_in_full</span>
+                            class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                      <span class="material-symbols-outlined text-[16px]">open_in_full</span>
                     </button>
                   </div>
 
                   <!-- Bottom Barber Author & Technique Tag inside Frame -->
-                  <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
+                  <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2 min-w-0">
                       <img src="${KultUI.escapeHtml(item.barber_avatar)}"
                            alt="${KultUI.escapeHtml(item.barber_name)}"
-                           class="w-7 h-7 rounded-full object-cover border border-white shrink-0" />
+                           class="w-6 h-6 rounded-full object-cover border border-white shrink-0" />
                       <div class="min-w-0">
                         <span class="font-title-md text-xs text-white font-bold block truncate">${KultUI.escapeHtml(item.barber_name)}</span>
-                        <span class="font-label-sm text-[10px] text-[#34D399] uppercase block truncate">${KultUI.escapeHtml(item.barber_specialty)}</span>
+                        <span class="font-label-sm text-[9px] text-[#34D399] uppercase block truncate">${KultUI.escapeHtml(item.barber_specialty)}</span>
                       </div>
                     </div>
-                    <span class="px-2 py-0.5 rounded bg-white/90 text-zinc-900 font-label-sm text-[10px] uppercase font-bold shrink-0">
+                    <span class="px-2 py-0.5 rounded bg-white/90 text-zinc-900 font-label-sm text-[9px] uppercase font-bold shrink-0 max-w-[130px] truncate">
                       ${KultUI.escapeHtml(item.technique_tag || item.category_slug)}
                     </span>
                   </div>
                 </div>
 
-                <!-- Card Details & Direct Booking Footer (Crisp White Card Body) -->
-                <div class="p-4 flex-1 flex flex-col justify-between gap-3 bg-white">
+                <!-- Card Details & Direct Booking Footer -->
+                <div class="p-3.5 flex-1 flex flex-col justify-between gap-3 bg-white">
                   <div>
-                    <h3 class="font-title-md text-base text-primary font-bold leading-snug mb-1">${KultUI.escapeHtml(item.title)}</h3>
+                    <h3 class="font-title-md text-sm sm:text-base text-primary font-bold leading-snug mb-1">${KultUI.escapeHtml(item.title)}</h3>
                     <p class="font-body-sm text-xs text-on-surface-variant line-clamp-2">${KultUI.escapeHtml(item.description)}</p>
                   </div>
 
-                  <div class="pt-3 border-t border-zinc-200 flex items-center justify-between gap-2">
+                  <div class="pt-2.5 border-t border-zinc-200 flex items-center justify-between gap-2">
                     <button type="button"
                             onclick="KultApp.likePortfolio(${item.id}, event)"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs transition-all ${
+                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs transition-all ${
                               isLiked ? 'text-zinc-900 font-bold border-zinc-400' : 'text-zinc-600'
                             }">
-                      <span class="material-symbols-outlined text-[15px] text-red-600" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                      <span class="material-symbols-outlined text-[14px] text-red-600" style="font-variation-settings: 'FILL' 1;">favorite</span>
                       <span>${item.likes_count || 0}</span>
                     </button>
 
                     <button type="button"
                             onclick="KultApp.bookFromPortfolio(${item.id})"
-                            class="btn-kult-primary py-1.5 px-3.5 text-xs">
-                      <span>Reservar este Look</span>
-                      <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                            class="btn-kult-primary py-1.5 px-3 text-[11px]">
+                      <span>Reservar Look</span>
+                      <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </button>
                   </div>
                 </div>
