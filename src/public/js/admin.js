@@ -80,33 +80,17 @@ const KultAdmin = {
         <form onsubmit="KultAdmin.handleLogin(event)" class="space-y-4">
           <div>
             <label class="kult-label" for="login-email">Correo Electrónico</label>
-            <input id="login-email" type="email" required placeholder="admin@kultstudio.com" value="admin@kultstudio.com" class="kult-input" />
+            <input id="login-email" type="email" required autocomplete="username" placeholder="Ingresa tu correo electrónico" class="kult-input" />
           </div>
           <div>
             <label class="kult-label" for="login-password">Contraseña</label>
-            <input id="login-password" type="password" required placeholder="••••••••••••" value="KultAdmin2026!" class="kult-input" />
+            <input id="login-password" type="password" required autocomplete="current-password" placeholder="Ingresa tu contraseña" class="kult-input" />
           </div>
           <button type="submit" id="login-submit-btn" class="btn-kult-primary w-full py-3">
             <span>Autenticar &amp; Entrar</span>
             <span class="material-symbols-outlined text-[18px]">lock_open</span>
           </button>
         </form>
-
-        <div class="mt-6 pt-5 border-t border-zinc-200">
-          <span class="kult-label mb-2">Perfiles configurados (Acceso Rápido)</span>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button"
-                    class="btn-kult-secondary text-xs py-2 justify-start"
-                    onclick="KultAdmin.fillCredentials('admin@kultstudio.com', 'KultAdmin2026!')">
-              <span class="material-symbols-outlined text-[15px]">shield_person</span> Admin General
-            </button>
-            <button type="button"
-                    class="btn-kult-secondary text-xs py-2 justify-start"
-                    onclick="KultAdmin.fillCredentials('mateo@kultstudio.com', 'KultBarber2026!')">
-              <span class="material-symbols-outlined text-[15px]">content_cut</span> Mateo (Barbero)
-            </button>
-          </div>
-        </div>
       </div>
     `;
   },
@@ -1938,8 +1922,36 @@ const KultAdmin = {
           </form>
         </div>
 
-        <!-- External Integrations Status -->
+        <!-- Account Security & External Integrations Status -->
         <div class="lg:col-span-4 space-y-4">
+          <div class="surface-level-1 rounded-xl p-5">
+            <h4 class="font-headline-md text-base text-primary font-bold uppercase mb-1">Seguridad &amp; Acceso (Mi Cuenta)</h4>
+            <p class="font-body-sm text-xs text-on-surface-variant mb-4">
+              Cambia tu correo de acceso o tu contraseña de administrador.
+            </p>
+            <form onsubmit="KultAdmin.saveAccountCredentials(event)" class="space-y-3">
+              <div>
+                <label class="kult-label">Nombre de Usuario</label>
+                <input id="acc-name" type="text" required value="${KultUI.escapeHtml(KultStore.user?.name || '')}" class="kult-input" />
+              </div>
+              <div>
+                <label class="kult-label">Correo de Acceso</label>
+                <input id="acc-email" type="email" required value="${KultUI.escapeHtml(KultStore.user?.email || '')}" class="kult-input" />
+              </div>
+              <div>
+                <label class="kult-label">Contraseña Actual *</label>
+                <input id="acc-current-pass" type="password" required placeholder="Ingresa tu contraseña actual" class="kult-input" />
+              </div>
+              <div>
+                <label class="kult-label">Nueva Contraseña (Opcional)</label>
+                <input id="acc-new-pass" type="password" minlength="6" placeholder="Mínimo 6 caracteres" class="kult-input" />
+              </div>
+              <button type="submit" class="btn-kult-primary w-full py-2.5 text-xs">
+                <span class="material-symbols-outlined text-[16px]">key</span> Actualizar Credenciales
+              </button>
+            </form>
+          </div>
+
           <div class="surface-level-1 rounded-xl p-5">
             <h4 class="font-headline-md text-base text-primary font-bold uppercase mb-2">Estado de Integraciones</h4>
             <p class="font-body-sm text-xs text-on-surface-variant mb-4">
@@ -1979,6 +1991,26 @@ const KultAdmin = {
         </div>
       </div>
     `;
+  },
+
+  async saveAccountCredentials(event) {
+    event.preventDefault();
+    try {
+      const res = await KultAPI.put('/api/auth/account', {
+        name: document.getElementById('acc-name').value,
+        email: document.getElementById('acc-email').value,
+        current_password: document.getElementById('acc-current-pass').value,
+        new_password: document.getElementById('acc-new-pass').value
+      });
+      KultStore.user = res.user;
+      KultApp.updateHeaderUserBadge();
+      document.getElementById('acc-current-pass').value = '';
+      document.getElementById('acc-new-pass').value = '';
+      KultUI.toast(res.message);
+      await this.loadAdminPortal();
+    } catch (err) {
+      KultUI.toast(err.message, 'error');
+    }
   },
 
   async saveBusinessSettings(event) {

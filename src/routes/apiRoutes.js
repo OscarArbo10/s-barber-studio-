@@ -41,6 +41,9 @@ async function handleApiRoute(req, res, urlObj) {
   if (pathname === '/api/auth/me' && method === 'GET') {
     return authController.me(req, res);
   }
+  if (pathname === '/api/auth/account' && (method === 'PUT' || method === 'PATCH')) {
+    return authController.updateAccount(req, res);
+  }
 
   // --- ADMIN & BARBER PROTECTED ROUTES ---
   if (pathname.startsWith('/api/admin/')) {

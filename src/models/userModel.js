@@ -76,6 +76,33 @@ const userModel = {
     `).all();
   },
 
+  updateAccount(userId, { name, email, currentPassword, newPassword }) {
+    const user = db.prepare(`SELECT * FROM users WHERE id = ?`).get(Number(userId));
+    if (!user) {
+      const err = new Error('Usuario no encontrado.');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    if (!currentPassword || !verifyPassword(currentPassword, user.password_hash)) {
+      const err = new Error('La contraseña actual es incorrecta.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const nextName = name && name.trim() ? name.trim() : user.name;
+    const nextEmail = email && email.trim() ? email.trim() : user.email;
+    const nextHash = newPassword && newPassword.trim() ? hashPassword(newPassword.trim()) : user.password_hash;
+
+    db.prepare(`
+      UPDATE users
+      SET name = ?, email = ?, password_hash = ?
+      WHERE id = ?
+    `).run(nextName, nextEmail, nextHash, Number(userId));
+
+    return this.findById(userId);
+  },
+
   upsertBarberUser({ barberId, name, email, password, active = 1 }) {
     if (!email) return null;
     const existing = db.prepare(`SELECT id FROM users WHERE barber_id = ? OR lower(email) = lower(?)`).get(barberId, email);

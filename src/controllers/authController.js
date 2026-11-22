@@ -54,6 +54,31 @@ const authController = {
       return sendJson(res, 401, { authenticated: false, user: null });
     }
     sendJson(res, 200, { authenticated: true, user });
+  },
+
+  async updateAccount(req, res) {
+    try {
+      const user = getAuthenticatedUser(req);
+      if (!user) {
+        return sendJson(res, 401, { error: 'No autenticado.' });
+      }
+      const body = await readJsonBody(req);
+      if (body.new_password && body.new_password.trim().length < 6) {
+        return sendJson(res, 400, { error: 'La nueva contraseña debe tener al menos 6 caracteres.' });
+      }
+      const updated = userModel.updateAccount(user.id, {
+        name: body.name,
+        email: body.email,
+        currentPassword: body.current_password,
+        newPassword: body.new_password
+      });
+      sendJson(res, 200, {
+        message: 'Credenciales de acceso actualizadas correctamente.',
+        user: updated
+      });
+    } catch (err) {
+      sendJson(res, err.statusCode || 400, { error: err.message });
+    }
   }
 };
 
