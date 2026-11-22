@@ -10,7 +10,10 @@ const { getAuthenticatedUser } = require('./middlewares/authMiddleware');
 
 let initialized = false;
 function ensureInitialized() {
-  if (initialized) return;
+  if (initialized || db.isSupabase) {
+    initialized = true;
+    return;
+  }
   initialized = true;
   try {
     initSchema();

@@ -1,3 +1,4 @@
+const { db } = require('../database/connection');
 const settingsModel = require('../models/settingsModel');
 const serviceModel = require('../models/serviceModel');
 const barberModel = require('../models/barberModel');
@@ -8,10 +9,47 @@ const availabilityService = require('../services/availabilityService');
 const integrationService = require('../services/integrationService');
 const validators = require('../validation/validators');
 const { sendJson, readJsonBody } = require('../utils/http');
-const { getAuthenticatedUser } = require('../middlewares/authMiddleware');
+const { getAuthenticatedUser, extractToken } = require('../middlewares/authMiddleware');
 
 const publicController = {
   getBootstrap(req, res) {
+    if (db.isSupabase && typeof db.callRpc === 'function') {
+      const token = extractToken(req);
+      const boot = db.callRpc('sbarber_get_bootstrap', {
+        session_token: token || null
+      });
+
+      const settings = boot.settings || {};
+      const categories = boot.categories || [];
+      const services = boot.services || [];
+      const barbers = boot.barbers || [];
+      const studioHours = boot.studioHours || [];
+      const portfolio = boot.portfolio || [];
+      const user = boot.user || null;
+
+      const firstService = services[0] || null;
+      const initialAvailability = firstService
+        ? availabilityService.getAvailability({
+            serviceId: firstService.id,
+            barberId: 'any',
+            daysCount: 14,
+            preloadedSettings: settings,
+            preloadedService: firstService
+          })
+        : null;
+
+      return sendJson(res, 200, {
+        settings,
+        categories,
+        services,
+        barbers,
+        studioHours,
+        portfolio,
+        initialAvailability,
+        user
+      });
+    }
+
     const settings = settingsModel.getSettings();
     const categories = serviceModel.listCategories({ onlyActive: true });
     const services = serviceModel.listServices({ onlyActive: true });

@@ -142,6 +142,13 @@ function translateSqliteToPostgres(sql, isRun) {
 const db = {
   isSupabase: true,
 
+  callRpc(rpcName, payload = {}) {
+    return callSupabaseRpcSync(rpcName, {
+      secret_token: env.supabase.rpcSecret,
+      ...payload
+    });
+  },
+
   exec(rawSql) {
     const clean = rawSql.trim();
     if (!clean || /^PRAGMA/i.test(clean) || /^BEGIN/i.test(clean) || /^COMMIT/i.test(clean) || /^ROLLBACK/i.test(clean)) {

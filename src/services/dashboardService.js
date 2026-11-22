@@ -79,24 +79,31 @@ const dashboardService = {
       LIMIT 10
     `).all(today);
 
-    // 5. 7-Day Activity Chart (last 3 days + today + next 3 days)
+    // 5. 7-Day Activity Chart (last 3 days + today + next 3 days) in 1 single query
+    const startChartDate = addDays(today, -3);
+    const endChartDate = addDays(today, 3);
+    const chartRows = db.prepare(`
+      SELECT
+        bk.date,
+        COUNT(*) as count,
+        COALESCE(SUM(CASE WHEN bk.status IN ('confirmed', 'completed') THEN bk.price ELSE 0 END), 0) as revenue
+      FROM bookings bk
+      WHERE bk.date >= ? AND bk.date <= ? AND bk.status != 'cancelled' ${barberFilter}
+      GROUP BY bk.date
+    `).all(startChartDate, endChartDate);
+
+    const chartMap = new Map(chartRows.map(r => [r.date, r]));
     const dailyChart = [];
     for (let offset = -3; offset <= 3; offset++) {
       const d = addDays(today, offset);
-      const row = db.prepare(`
-        SELECT
-          COUNT(*) as count,
-          COALESCE(SUM(CASE WHEN bk.status IN ('confirmed', 'completed') THEN bk.price ELSE 0 END), 0) as revenue
-        FROM bookings bk
-        WHERE bk.date = ? AND bk.status != 'cancelled' ${barberFilter}
-      `).get(d);
+      const row = chartMap.get(d) || { count: 0, revenue: 0 };
       const lbl = formatDateLabelEs(d);
       dailyChart.push({
         date: d,
         label: `${lbl.dayName} ${lbl.dayNum}`,
         isToday: d === today,
-        bookings: row.count || 0,
-        revenue: row.revenue || 0
+        bookings: Number(row.count) || 0,
+        revenue: Number(row.revenue) || 0
       });
     }
 
