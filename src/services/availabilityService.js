@@ -234,6 +234,40 @@ const availabilityService = {
    * Gets multi-day calendar availability + detailed slots for the selected date in 1 single RPC call.
    * Zero SQL queries inside the day/barber loops.
    */
+  async getAvailabilityAsync(opts) {
+    if (db.isSupabase && typeof db.callRpcAsync === 'function') {
+      const initialTz =
+        (opts.preloadedSettings && opts.preloadedSettings.timezone) || env.defaultTimezone || 'America/Mexico_City';
+      const nowInfo = getNowInTimezone(initialTz);
+      const numDays = Math.min(30, Math.max(7, Number(opts.daysCount) || 14));
+      const calendarStart = opts.startDate && opts.startDate >= nowInfo.dateStr ? opts.startDate : nowInfo.dateStr;
+
+      const dateList = [];
+      for (let i = 0; i < numDays; i++) {
+        dateList.push(addDays(calendarStart, i));
+      }
+      const queryDates = [...dateList];
+      if (opts.date && opts.date >= nowInfo.dateStr && !queryDates.includes(opts.date)) {
+        queryDates.push(opts.date);
+      }
+
+      const targetServiceId =
+        Number(opts.serviceId) || (opts.preloadedService && Number(opts.preloadedService.id)) || 1;
+      const preloadedSnapshot = await db.callRpcAsync('sbarber_get_availability_snapshot', {
+        p_service_id: targetServiceId,
+        p_barber_ids: [],
+        p_dates: queryDates,
+        p_exclude_booking_id: opts.excludeBookingId ? Number(opts.excludeBookingId) : null
+      });
+
+      return this.getAvailability({
+        ...opts,
+        preloadedSnapshot
+      });
+    }
+    return this.getAvailability(opts);
+  },
+
   getAvailability({
     serviceId,
     barberId = 'any',
@@ -242,7 +276,8 @@ const availabilityService = {
     daysCount = 14,
     excludeBookingId = null,
     preloadedSettings = null,
-    preloadedService = null
+    preloadedService = null,
+    preloadedSnapshot = null
   }) {
     const initialTz = (preloadedSettings && preloadedSettings.timezone) || env.defaultTimezone || 'America/Mexico_City';
     let nowInfo = getNowInTimezone(initialTz);
@@ -266,7 +301,14 @@ const availabilityService = {
     let blocks;
     let bookings;
 
-    if (db.isSupabase && typeof db.callRpc === 'function') {
+    if (preloadedSnapshot) {
+      settings = preloadedSnapshot.settings || preloadedSettings || { timezone: initialTz };
+      service = preloadedSnapshot.service || preloadedService;
+      compatibleBarbers = preloadedSnapshot.compatibleBarbers || [];
+      workingHours = preloadedSnapshot.workingHours || [];
+      blocks = preloadedSnapshot.blocks || [];
+      bookings = preloadedSnapshot.bookings || [];
+    } else if (db.isSupabase && typeof db.callRpc === 'function') {
       const targetServiceId = Number(serviceId) || (preloadedService && Number(preloadedService.id)) || 1;
       const snapshot = db.callRpc('sbarber_get_availability_snapshot', {
         p_service_id: targetServiceId,

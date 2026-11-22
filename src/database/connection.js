@@ -139,11 +139,45 @@ function translateSqliteToPostgres(sql, isRun) {
   return out;
 }
 
+async function callSupabaseRpcAsync(rpcName, payload) {
+  const url = `${env.supabase.url.replace(/\/$/, '')}/rest/v1/rpc/${rpcName}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': env.supabase.anonKey,
+      'Authorization': 'Bearer ' + env.supabase.anonKey
+    },
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (_) {
+    data = text;
+  }
+  if (!res.ok) {
+    const errMsg =
+      (data && (data.message || data.details || data.error)) ||
+      `Error HTTP ${res.status} en Supabase RPC ${rpcName}`;
+    throw new Error(errMsg);
+  }
+  return data;
+}
+
 const db = {
   isSupabase: true,
 
   callRpc(rpcName, payload = {}) {
     return callSupabaseRpcSync(rpcName, {
+      secret_token: env.supabase.rpcSecret,
+      ...payload
+    });
+  },
+
+  callRpcAsync(rpcName, payload = {}) {
+    return callSupabaseRpcAsync(rpcName, {
       secret_token: env.supabase.rpcSecret,
       ...payload
     });

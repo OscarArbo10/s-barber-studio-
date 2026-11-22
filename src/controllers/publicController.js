@@ -12,33 +12,63 @@ const { sendJson, readJsonBody } = require('../utils/http');
 const { getAuthenticatedUser, extractToken } = require('../middlewares/authMiddleware');
 
 const publicController = {
-  getBootstrap(req, res) {
-    if (db.isSupabase && typeof db.callRpc === 'function') {
-      const token = extractToken(req);
-      const boot = db.callRpc('sbarber_get_bootstrap', {
-        session_token: token || null
-      });
+  async getBootstrap(req, res) {
+    try {
+      if (db.isSupabase && typeof db.callRpcAsync === 'function') {
+        const token = extractToken(req);
+        const boot = await db.callRpcAsync('sbarber_get_bootstrap', {
+          session_token: token || null
+        });
 
-      const settings = boot.settings || {};
-      const categories = boot.categories || [];
-      const services = boot.services || [];
-      const barbers = boot.barbers || [];
-      const studioHours = boot.studioHours || [];
-      const portfolio = boot.portfolio || [];
-      const user = boot.user || null;
+        const settings = boot.settings || {};
+        const categories = boot.categories || [];
+        const services = boot.services || [];
+        const barbers = boot.barbers || [];
+        const studioHours = boot.studioHours || [];
+        const portfolio = boot.portfolio || [];
+        const user = boot.user || null;
 
-      const firstService = services[0] || null;
-      const initialAvailability = firstService
+        const firstService = services[0] || null;
+        const initialAvailability = firstService
+          ? await availabilityService.getAvailabilityAsync({
+              serviceId: firstService.id,
+              barberId: 'any',
+              daysCount: 14,
+              preloadedSettings: settings,
+              preloadedService: firstService
+            })
+          : null;
+
+        return sendJson(res, 200, {
+          settings,
+          categories,
+          services,
+          barbers,
+          studioHours,
+          portfolio,
+          initialAvailability,
+          user
+        });
+      }
+
+      const settings = settingsModel.getSettings();
+      const categories = serviceModel.listCategories({ onlyActive: true });
+      const services = serviceModel.listServices({ onlyActive: true });
+      const barbers = barberModel.listBarbers({ onlyActive: true });
+      const studioHours = scheduleModel.getStudioWorkingHours();
+      const portfolio = portfolioModel.listItems({ onlyActive: true });
+      const user = getAuthenticatedUser(req);
+
+      const firstServiceId = services[0] ? services[0].id : null;
+      const initialAvailability = firstServiceId
         ? availabilityService.getAvailability({
-            serviceId: firstService.id,
+            serviceId: firstServiceId,
             barberId: 'any',
-            daysCount: 14,
-            preloadedSettings: settings,
-            preloadedService: firstService
+            daysCount: 14
           })
         : null;
 
-      return sendJson(res, 200, {
+      sendJson(res, 200, {
         settings,
         categories,
         services,
@@ -48,35 +78,9 @@ const publicController = {
         initialAvailability,
         user
       });
+    } catch (err) {
+      sendJson(res, 500, { error: err.message });
     }
-
-    const settings = settingsModel.getSettings();
-    const categories = serviceModel.listCategories({ onlyActive: true });
-    const services = serviceModel.listServices({ onlyActive: true });
-    const barbers = barberModel.listBarbers({ onlyActive: true });
-    const studioHours = scheduleModel.getStudioWorkingHours();
-    const portfolio = portfolioModel.listItems({ onlyActive: true });
-    const user = getAuthenticatedUser(req);
-
-    const firstServiceId = services[0] ? services[0].id : null;
-    const initialAvailability = firstServiceId
-      ? availabilityService.getAvailability({
-          serviceId: firstServiceId,
-          barberId: 'any',
-          daysCount: 14
-        })
-      : null;
-
-    sendJson(res, 200, {
-      settings,
-      categories,
-      services,
-      barbers,
-      studioHours,
-      portfolio,
-      initialAvailability,
-      user
-    });
   },
 
   likePortfolioItem(req, res, id) {
@@ -91,7 +95,7 @@ const publicController = {
     }
   },
 
-  getAvailability(req, res, urlObj) {
+  async getAvailability(req, res, urlObj) {
     try {
       const serviceId = urlObj.searchParams.get('serviceId');
       const barberId = urlObj.searchParams.get('barberId') || 'any';
@@ -100,7 +104,7 @@ const publicController = {
       const daysCount = urlObj.searchParams.get('daysCount') || 14;
       const excludeBookingId = urlObj.searchParams.get('excludeBookingId') || null;
 
-      const data = availabilityService.getAvailability({
+      const data = await availabilityService.getAvailabilityAsync({
         serviceId,
         barberId,
         date,

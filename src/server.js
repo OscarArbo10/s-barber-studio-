@@ -65,6 +65,14 @@ async function requestHandler(req, res) {
     ensureInitialized();
 
     const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const rewrittenPath = urlObj.searchParams.get('__path');
+    if (rewrittenPath) {
+      urlObj.pathname = rewrittenPath.startsWith('/') ? rewrittenPath : `/${rewrittenPath}`;
+      urlObj.searchParams.delete('__path');
+    } else if (urlObj.pathname === '/api/index.js' || urlObj.pathname === '/api/index') {
+      const forwardedPath = req.headers['x-matched-path'] || req.headers['x-invoke-path'] || '/';
+      urlObj.pathname = forwardedPath === '/api/index.js' || forwardedPath === '/api/index' ? '/' : forwardedPath;
+    }
     const pathname = decodeURIComponent(urlObj.pathname);
 
     // 1. API Routes
