@@ -97,12 +97,41 @@ const bookingModel = {
   getByCodeOrPhone(query) {
     if (!query || !query.trim()) return [];
     const clean = query.trim();
-    const rows = db.prepare(`
+    const digitsOnly = clean.replace(/[^0-9]/g, '');
+
+    if (/^(SBS|KLT)-[A-Z0-9]+$/i.test(clean)) {
+      return db.prepare(`
+        SELECT
+          bk.id, bk.booking_code, bk.date, bk.start_time, bk.end_time,
+          bk.duration_minutes, bk.price, bk.status, bk.notes,
+          cl.name as client_name,
+          cl.phone as client_phone,
+          s.name as service_name,
+          cat.name as category_name,
+          br.name as barber_name,
+          br.specialty as barber_specialty,
+          br.avatar_url as barber_avatar
+        FROM bookings bk
+        JOIN clients cl ON bk.client_id = cl.id
+        JOIN services s ON bk.service_id = s.id
+        JOIN categories cat ON s.category_id = cat.id
+        JOIN barbers br ON bk.barber_id = br.id
+        WHERE upper(bk.booking_code) = upper(?)
+        ORDER BY bk.date DESC, bk.start_time DESC
+        LIMIT 10
+      `).all(clean);
+    }
+
+    if (digitsOnly.length < 7) {
+      return [];
+    }
+
+    return db.prepare(`
       SELECT
-        bk.*,
+        bk.id, bk.booking_code, bk.date, bk.start_time, bk.end_time,
+        bk.duration_minutes, bk.price, bk.status, bk.notes,
         cl.name as client_name,
         cl.phone as client_phone,
-        cl.email as client_email,
         s.name as service_name,
         cat.name as category_name,
         br.name as barber_name,
@@ -113,12 +142,11 @@ const bookingModel = {
       JOIN services s ON bk.service_id = s.id
       JOIN categories cat ON s.category_id = cat.id
       JOIN barbers br ON bk.barber_id = br.id
-      WHERE upper(bk.booking_code) = upper(?)
-         OR replace(replace(cl.phone, ' ', ''), '-', '') LIKE '%' || replace(replace(?, ' ', ''), '-', '') || '%'
+      WHERE replace(replace(replace(replace(cl.phone, ' ', ''), '-', ''), '+', ''), '(', '') = ?
+         OR right(replace(replace(replace(replace(cl.phone, ' ', ''), '-', ''), '+', ''), '(', ''), 10) = right(?, 10)
       ORDER BY bk.date DESC, bk.start_time DESC
-      LIMIT 15
-    `).all(clean, clean);
-    return rows;
+      LIMIT 10
+    `).all(digitsOnly, digitsOnly);
   },
 
   addHistory({ bookingId, action, previousStatus = '', newStatus = '', details = '', performedBy = 'Sistema' }) {

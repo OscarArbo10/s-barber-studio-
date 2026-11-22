@@ -9,7 +9,9 @@ const KultBooking = {
       KultStore.booking.serviceId = firstService.id;
     }
 
-    if (KultStore.barbers.length > 0 && !KultStore.booking.barberId) {
+    if (KultStore.barbers.length === 1) {
+      KultStore.booking.barberId = KultStore.barbers[0].id;
+    } else if (KultStore.barbers.length > 0 && !KultStore.booking.barberId) {
       KultStore.booking.barberId = KultStore.barbers[0].id;
     }
 
@@ -327,7 +329,8 @@ const KultBooking = {
       `;
     }).join('');
 
-    container.innerHTML = anyCardHtml + barberCardsHtml;
+    const showAnyCard = compatibleBarbers.length > 1;
+    container.innerHTML = (showAnyCard ? anyCardHtml : '') + barberCardsHtml;
   },
 
   async selectBarber(barberId) {
@@ -825,6 +828,7 @@ const KultBooking = {
       }
 
       const symbol = (KultStore.settings && KultStore.settings.currency_symbol) || '$';
+      const whatsappNum = ((KultStore.settings && KultStore.settings.whatsapp) || '').replace(/[^0-9]/g, '');
       resultsContainer.innerHTML = list.map(bk => {
         const statusColors = {
           pending: 'bg-amber-50 text-amber-700 border-amber-300',
@@ -838,6 +842,9 @@ const KultBooking = {
           completed: 'Completada',
           cancelled: 'Cancelada'
         };
+
+        const waMsg = encodeURIComponent(`Hola S BARBER STUDIO, necesito asistencia con mi cita ${bk.booking_code} (${bk.date} ${bk.start_time}).`);
+        const waHref = whatsappNum ? `https://wa.me/${whatsappNum}?text=${waMsg}` : '#';
 
         return `
           <div class="surface-level-1 rounded-xl p-5 border border-zinc-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -857,18 +864,21 @@ const KultBooking = {
                 Horario: <strong class="text-zinc-900">${KultUI.escapeHtml(bk.start_time)} - ${KultUI.escapeHtml(bk.end_time)}</strong>
               </p>
               <p class="font-label-sm text-xs text-outline">
-                Cliente: ${KultUI.escapeHtml(bk.client_name)} (${KultUI.escapeHtml(bk.client_phone)})
+                Titular: ${KultUI.escapeHtml(bk.client_name)} (${KultUI.escapeHtml(bk.client_phone_masked || '••••')})
               </p>
             </div>
-            <div class="flex items-center justify-between md:flex-col md:items-end gap-3">
+            <div class="flex items-center justify-between md:flex-col md:items-end gap-2">
               <span class="font-title-lg text-xl text-primary font-extrabold">${KultUI.formatPrice(bk.price, symbol)}</span>
-              ${(bk.status === 'pending' || bk.status === 'confirmed') ? `
-                <button type="button"
-                        class="px-3 py-1.5 rounded border border-red-300 text-red-600 hover:bg-red-600 hover:text-white font-label-sm text-label-sm uppercase tracking-wider transition-all"
-                        onclick="KultBooking.cancelClientBookingPrompt('${KultUI.escapeHtml(bk.booking_code)}', '${KultUI.escapeHtml(bk.client_phone)}')">
-                  Cancelar Cita
-                </button>
-              ` : ''}
+              ${(bk.status === 'pending' || bk.status === 'confirmed') && whatsappNum ? `
+                <a href="${waHref}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn-kult-secondary py-1.5 px-3 text-[11px]">
+                  <span class="material-symbols-outlined text-[15px]">chat</span> Solicitar cambio / cancelación
+                </a>
+              ` : `
+                <span class="font-label-sm text-[10px] text-outline uppercase">Solo lectura</span>
+              `}
             </div>
           </div>
         `;
@@ -879,27 +889,6 @@ const KultBooking = {
           ${KultUI.escapeHtml(err.message)}
         </div>
       `;
-    }
-  },
-
-  async cancelClientBookingPrompt(bookingCode, clientPhone) {
-    const confirmed = await KultUI.confirmDialog({
-      title: `Cancelar Reserva ${bookingCode}`,
-      message: `¿Confirmas que deseas cancelar tu cita ${bookingCode}? El horario quedará libre inmediatamente.`,
-      confirmText: 'Sí, Cancelar Cita',
-      destructive: true
-    });
-    if (!confirmed) return;
-
-    try {
-      await KultAPI.post(`/api/public/bookings/${encodeURIComponent(bookingCode)}/cancel`, {
-        phone: clientPhone
-      });
-      KultUI.toast('Tu cita ha sido cancelada.');
-      await this.lookupClientBookings(bookingCode);
-      await this.refreshAvailability({ keepTime: false });
-    } catch (err) {
-      KultUI.toast(err.message, 'error');
     }
   }
 };

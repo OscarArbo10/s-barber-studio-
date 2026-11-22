@@ -150,47 +150,43 @@ const publicController = {
   },
 
   lookupBookings(req, res, urlObj) {
-    const q = urlObj.searchParams.get('q') || '';
-    if (!q.trim() || q.trim().length < 4) {
-      return sendJson(res, 400, { error: 'Ingresa tu código de reserva (ej. KLT-841920) o tu número de teléfono.' });
+    const q = (urlObj.searchParams.get('q') || '').trim();
+    const digits = q.replace(/[^0-9]/g, '');
+    const isCode = /^(SBS|KLT)-[A-Z0-9]+$/i.test(q);
+    if (!isCode && digits.length < 7) {
+      return sendJson(res, 400, {
+        error: 'Ingresa tu código completo de reserva (ej. SBS-841920) o tu número de teléfono completo (mínimo 7 dígitos).'
+      });
     }
-    const bookings = bookingModel.getByCodeOrPhone(q);
+    const rawBookings = bookingModel.getByCodeOrPhone(q);
+    // Mask sensitive client info in public lookup
+    const bookings = rawBookings.map(bk => {
+      const phoneStr = String(bk.client_phone || '');
+      const maskedPhone = phoneStr.length > 4 ? `•••• ${phoneStr.slice(-4)}` : '••••';
+      return {
+        booking_code: bk.booking_code,
+        date: bk.date,
+        start_time: bk.start_time,
+        end_time: bk.end_time,
+        duration_minutes: bk.duration_minutes,
+        price: bk.price,
+        status: bk.status,
+        service_name: bk.service_name,
+        category_name: bk.category_name,
+        barber_name: bk.barber_name,
+        barber_specialty: bk.barber_specialty,
+        barber_avatar: bk.barber_avatar,
+        client_name: bk.client_name,
+        client_phone_masked: maskedPhone
+      };
+    });
     sendJson(res, 200, { bookings });
   },
 
-  async cancelClientBooking(req, res, bookingCode) {
-    try {
-      const body = await readJsonBody(req);
-      const phone = (body.phone || '').replace(/[^0-9]/g, '');
-      const matches = bookingModel.getByCodeOrPhone(bookingCode);
-      const booking = matches.find(b => b.booking_code.toUpperCase() === bookingCode.toUpperCase());
-
-      if (!booking) {
-        return sendJson(res, 404, { error: 'No se encontró una reserva con ese código.' });
-      }
-
-      const bookingPhone = (booking.client_phone || '').replace(/[^0-9]/g, '');
-      if (!phone || !bookingPhone.endsWith(phone.slice(-7))) {
-        return sendJson(res, 403, { error: 'El teléfono ingresado no coincide con el titular de la reserva.' });
-      }
-
-      if (booking.status === 'cancelled') {
-        return sendJson(res, 400, { error: 'Esta reserva ya se encuentra cancelada.' });
-      }
-
-      const updated = availabilityService.updateBookingAtomic(
-        booking.id,
-        { status: 'cancelled' },
-        `Cliente (${booking.client_name})`
-      );
-
-      sendJson(res, 200, {
-        message: 'Tu reserva ha sido cancelada y el horario fue liberado.',
-        booking: updated
-      });
-    } catch (err) {
-      sendJson(res, err.statusCode || 500, { error: err.message });
-    }
+  async cancelClientBooking(req, res) {
+    return sendJson(res, 403, {
+      error: 'Por seguridad y control de agenda, las cancelaciones solo pueden ser gestionadas directamente por el barbero o administrador de S BARBER STUDIO.'
+    });
   }
 };
 
