@@ -61,8 +61,11 @@ const KultAdmin = {
     container.innerHTML = `
       <div class="max-w-md mx-auto my-8 surface-level-1 rounded-xl p-6 md:p-8 border border-zinc-200 shadow-xl">
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-11 h-11 rounded-lg bg-zinc-900 text-white flex items-center justify-center font-headline-md font-extrabold text-xl">
-            S
+          <div class="w-12 h-12 rounded-full overflow-hidden border border-zinc-200 shadow-sm shrink-0 bg-white">
+            <img src="${KultUI.escapeHtml((KultStore.settings && KultStore.settings.logo_url) || '/img/s-barber-logo.jpg')}"
+                 alt="S BARBER STUDIO"
+                 decoding="async"
+                 class="w-full h-full object-cover scale-110" />
           </div>
           <div>
             <span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Acceso Restringido</span>

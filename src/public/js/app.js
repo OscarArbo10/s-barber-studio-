@@ -44,10 +44,12 @@ const KultApp = {
     if (!s) return;
 
     const brandTitle = document.getElementById('header-brand-title');
+    const brandLogo = document.getElementById('header-brand-logo');
     const hygieneTitle = document.getElementById('studio-hygiene-title');
     const hygieneDesc = document.getElementById('studio-hygiene-desc');
 
     if (brandTitle) brandTitle.textContent = s.commercial_name || 'S BARBER STUDIO';
+    if (brandLogo) brandLogo.src = s.logo_url || '/img/s-barber-logo.jpg';
     if (hygieneTitle) hygieneTitle.textContent = s.hygiene_title || 'Protocolo S Barber Zero-Delay';
     if (hygieneDesc) hygieneDesc.textContent = s.hygiene_description;
   },

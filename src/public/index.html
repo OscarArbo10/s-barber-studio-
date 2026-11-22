@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>S BARBER STUDIO — Sistema de Reservas &amp; Lookbook</title>
+  <link rel="icon" type="image/jpeg" href="/img/s-barber-logo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -117,7 +118,7 @@
       }
     };
   </script>
-  <link rel="stylesheet" href="/css/styles.css?v=20261122e" />
+  <link rel="stylesheet" href="/css/styles.css?v=20261122f" />
 </head>
 <body class="bg-surface text-on-surface flex flex-col min-h-screen selection:bg-primary selection:text-on-primary">
 
@@ -125,8 +126,12 @@
   <header class="fixed top-0 w-full z-50 pt-safe bg-white/95 backdrop-blur-xl border-b border-zinc-200 shadow-sm">
     <div class="kult-container h-14 sm:h-16 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 cursor-pointer min-w-0" onclick="KultApp.switchView('inicio')">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#09090B] text-white flex items-center justify-center font-headline-md font-extrabold text-base sm:text-lg shadow-sm shrink-0">
-          S
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-zinc-200 shadow-sm shrink-0 bg-white">
+          <img id="header-brand-logo"
+               src="/img/s-barber-logo.jpg"
+               alt="S BARBER STUDIO"
+               decoding="async"
+               class="w-full h-full object-cover scale-110" />
         </div>
         <div class="flex flex-col min-w-0">
           <span id="header-brand-title" class="font-headline-md text-sm sm:text-base tracking-wider text-primary uppercase leading-none font-bold truncate">S BARBER STUDIO</span>
@@ -430,10 +435,10 @@
   </div>
 
   <!-- APPLICATION SCRIPTS -->
-  <script src="/js/api.js?v=20261122e"></script>
-  <script src="/js/store.js?v=20261122e"></script>
-  <script src="/js/booking.js?v=20261122e"></script>
-  <script src="/js/admin.js?v=20261122e"></script>
-  <script src="/js/app.js?v=20261122e"></script>
+  <script src="/js/api.js?v=20261122f"></script>
+  <script src="/js/store.js?v=20261122f"></script>
+  <script src="/js/booking.js?v=20261122f"></script>
+  <script src="/js/admin.js?v=20261122f"></script>
+  <script src="/js/app.js?v=20261122f"></script>
 </body>
 </html>

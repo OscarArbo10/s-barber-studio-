@@ -218,7 +218,7 @@ function seedDatabase() {
         1,
         'S BARBER STUDIO',
         'Arquitectura de Barbería & Precisión Editorial',
-        'https://lh3.googleusercontent.com/aida/ALJJyrD4g7IVZcDcVfjPQOFM3NruEPse-OGd4P9cyEMss5YHeWXyXrPS9dyAUIdayku8gNibhuRuLwcNvOzyjElo0xBcQMMoEw5PDBCVBs4xiFQAG-M3yCST33dHPUK6Dm1q9q1jm9LbplWwEdYgD19EY9nSdkb6u5YRKkh2uzMZTYTo_fYzu464-HWpcSFCVRSo6Y-vWmrmoVLZ5GYxlDcGTCvSwmYnkJ2cw5MY3WwQg0m4',
+        '/img/s-barber-logo.jpg',
         'Av. Presidente Masaryk 412, Polanco, CDMX',
         '+52 55 8421 9000',
         'concierge@sbarberstudio.com',
