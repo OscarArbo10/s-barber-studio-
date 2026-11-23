@@ -449,8 +449,8 @@ const KultApp = {
                          preload="metadata"
                          autoplay
                          muted
-                         loop
-                         playsinline></video>
+                         playsinline
+                         onended="const b=document.getElementById('hero-play-btn');if(b)b.innerHTML='<span class=&quot;material-symbols-outlined text-[18px]&quot;>play_arrow</span>';"></video>
                 ` : `
                   <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.media_url)}"
                        alt="${KultUI.escapeHtml(featuredVideo.title)}"
@@ -472,7 +472,8 @@ const KultApp = {
                               class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
                         <span class="material-symbols-outlined text-[16px]">volume_off</span>
                       </button>
-                      <button type="button"
+                      <button id="hero-play-btn"
+                              type="button"
                               title="Pausar/Reproducir"
                               onclick="KultApp.toggleInlineVideo('hero-featured-video', this, event)"
                               class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
@@ -636,8 +637,8 @@ const KultApp = {
                            src="${KultUI.escapeHtml(item.media_url)}${item.media_url.includes('#') ? '' : '#t=0.001'}"
                            preload="metadata"
                            muted
-                           loop
-                           playsinline></video>
+                           playsinline
+                           onended="const b=document.getElementById('btn-${videoDomId}');if(b)b.innerHTML='<span class=&quot;material-symbols-outlined text-[20px]&quot;>play_arrow</span>';"></video>
                   ` : `
                     <img decoding="async" src="${KultUI.escapeHtml(item.media_url)}"
                          alt="${KultUI.escapeHtml(item.title)}"
@@ -665,7 +666,8 @@ const KultApp = {
                   <!-- Top Right Play / Expand Controls -->
                   <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5">
                     ${isVideo ? `
-                      <button type="button"
+                      <button id="btn-${videoDomId}"
+                              type="button"
                               title="Reproducir / Pausar Video"
                               onclick="KultApp.toggleInlineVideo('${videoDomId}', this, event)"
                               class="w-8 h-8 rounded-full bg-white text-zinc-900 hover:scale-105 flex items-center justify-center shadow-lg transition-all">
