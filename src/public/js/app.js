@@ -351,168 +351,126 @@ const KultApp = {
     });
 
     const featuredVideo = allItems.find(i => i.media_type === 'video' && i.featured) || allItems.find(i => i.media_type === 'video') || allItems[0];
-    const selectedBarberObj = filters.barberId !== 'all'
-      ? (KultStore.barbers || []).find(b => Number(b.id) === Number(filters.barberId))
-      : null;
+    const logoUrl = (KultStore.settings && KultStore.settings.logo_url) || '/img/s-barber-logo.jpg';
 
     container.innerHTML = `
       <!-- ================================================================== -->
-      <!-- 1. HERO SHOWCASE: FEATURED BARBER REEL & LOOKBOOK INTRO            -->
+      <!-- 1. HERO SHOWCASE: LOGO CON BORDE NEÓN DINÁMICO & REEL DESTACADO    -->
       <!-- ================================================================== -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 pb-6 mb-6 border-b border-zinc-200">
-        <!-- Left Column: Editorial Statement & Barber Stories Strip -->
-        <div class="lg:col-span-6 flex flex-col justify-between space-y-4 min-w-0">
-          <div class="space-y-3">
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 max-w-full">
-              <span class="status-pip-avail shrink-0"></span>
-              <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-primary truncate">
-                S BARBER STUDIO · ${totalVideos} Videos &amp; ${totalImages} Fotos Reales
-              </span>
-            </div>
-
-            <h1 class="font-headline-xl text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-primary leading-[1.08] break-words">
-              TRABAJO DE AUTOR EN VIDEOS Y FOTOS.
-            </h1>
-
-            <p class="font-body-sm sm:font-body-md text-xs sm:text-sm text-on-surface-variant">
-              Explora las sesiones en video, degradados milimétricos, corte a tijera y rituales de navaja de nuestros barberos. Elige tu estilo y agenda directamente con el autor.
-            </p>
-
-            <div class="flex flex-wrap items-center gap-2 pt-1">
-              <button type="button" class="btn-kult-primary py-2.5 px-5 text-xs" onclick="KultApp.switchView('reservar')">
-                <span>Agendar Cita</span>
-                <span class="material-symbols-outlined text-[16px]">calendar_add_on</span>
-              </button>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pt-2 pb-6 mb-6 border-b border-zinc-200">
+        <!-- Left Column: Prominent Neon Logo + Editorial Headline + CTA -->
+        <div class="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 min-w-0">
+          <!-- Hero Logo with Dynamic Neon Border -->
+          <div class="neon-logo-ring w-28 h-28 sm:w-36 sm:h-36 shrink-0">
+            <div class="neon-logo-inner">
+              <img decoding="async"
+                   src="${KultUI.escapeHtml(logoUrl)}"
+                   alt="S BARBER STUDIO"
+                   class="w-full h-full object-cover scale-110" />
             </div>
           </div>
 
-          <!-- Barber Filter Avatars -->
-          <div class="surface-level-1 rounded-xl p-3 sm:p-4 border border-zinc-200 min-w-0">
-            <div class="flex items-center justify-between mb-2">
-              <span class="kult-label m-0">Filtrar por Barbero Especialista</span>
-              ${filters.barberId !== 'all' ? `
-                <button type="button" onclick="KultApp.setPortfolioFilter('barberId', 'all')" class="font-label-sm text-[10px] uppercase text-primary underline">
-                  Ver Todos
-                </button>
-              ` : ''}
-            </div>
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-              <!-- All Barbers Pill -->
-              <button type="button"
-                      onclick="KultApp.setPortfolioFilter('barberId', 'all')"
-                      class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg shrink-0 transition-all border ${
-                        filters.barberId === 'all'
-                          ? 'bg-primary text-on-primary border-primary font-bold shadow-sm'
-                          : 'bg-zinc-50 text-on-surface border-zinc-200 hover:border-zinc-400'
-                      }">
-                <div class="w-8 h-8 rounded-full ${filters.barberId === 'all' ? 'bg-white text-primary' : 'bg-zinc-200 text-primary'} flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-[16px]">grid_view</span>
-                </div>
-                <div class="text-left">
-                  <span class="font-title-md text-xs font-bold block leading-tight">Todos</span>
-                  <span class="font-label-sm text-[9px] ${filters.barberId === 'all' ? 'text-white/80' : 'text-outline'} uppercase">${allItems.length} items</span>
-                </div>
-              </button>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 max-w-full">
+            <span class="status-pip-avail shrink-0"></span>
+            <span class="font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider text-primary truncate">
+              S BARBER STUDIO · ${totalVideos} Videos &amp; ${totalImages} Fotos Reales
+            </span>
+          </div>
 
-              ${(KultStore.barbers || []).map(b => {
-                const isSelected = String(filters.barberId) === String(b.id);
-                const count = allItems.filter(i => Number(i.barber_id) === Number(b.id)).length;
-                return `
-                  <button type="button"
-                          onclick="KultApp.setPortfolioFilter('barberId', ${b.id})"
-                          class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg shrink-0 transition-all border ${
-                            isSelected
-                              ? 'bg-primary text-on-primary border-primary font-bold shadow-sm'
-                              : 'bg-zinc-50 text-on-surface border-zinc-200 hover:border-zinc-400'
-                          }">
-                    <img decoding="async" src="${KultUI.escapeHtml(b.avatar_url)}" alt="${KultUI.escapeHtml(b.name)}" class="w-8 h-8 rounded-full object-cover border ${isSelected ? 'border-white' : 'border-zinc-300'} shrink-0" />
-                    <div class="text-left">
-                      <span class="font-title-md text-xs font-bold block leading-tight">${KultUI.escapeHtml(b.name)}</span>
-                      <span class="font-label-sm text-[9px] ${isSelected ? 'text-white/80' : 'text-outline'} uppercase">${KultUI.escapeHtml(b.specialty)} · ${count}</span>
-                    </div>
-                  </button>
-                `;
-              }).join('')}
-            </div>
+          <h1 class="font-headline-xl text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-primary leading-[1.08] break-words">
+            TRABAJO DE AUTOR EN VIDEOS Y FOTOS.
+          </h1>
+
+          <p class="font-body-sm sm:font-body-md text-xs sm:text-sm text-on-surface-variant max-w-md lg:max-w-lg">
+            Explora nuestras sesiones en video, degradados milimétricos, corte a tijera y rituales de navaja. Elige el estilo que buscas y agenda tu cita al instante.
+          </p>
+
+          <div class="w-full sm:w-auto pt-1">
+            <button type="button" class="btn-kult-primary py-3 px-6 text-xs w-full sm:w-auto shadow-md" onclick="KultApp.switchView('reservar')">
+              <span>Agendar Mi Cita</span>
+              <span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+            </button>
           </div>
         </div>
 
-        <!-- Right Column: Featured Video Reel Showcase (Clean non-overlapping footer on mobile) -->
+        <!-- Right Column: Featured Video Reel with Dynamic Neon Border -->
         <div class="lg:col-span-6 min-w-0">
           ${featuredVideo ? `
-            <div class="surface-level-1 rounded-xl overflow-hidden border border-zinc-200 flex flex-col justify-between shadow-sm">
-              <div class="relative w-full h-56 sm:h-72 bg-zinc-950 overflow-hidden">
-                ${featuredVideo.media_type === 'video' ? `
-                  <video id="hero-featured-video"
-                         class="kult-portfolio-video w-full h-full object-cover"
-                         src="${KultUI.escapeHtml(featuredVideo.media_url)}${featuredVideo.media_url.includes('#') ? '' : '#t=0.001'}"
-                         preload="metadata"
-                         autoplay
-                         muted
-                         playsinline
-                         onended="const b=document.getElementById('hero-play-btn');if(b)b.innerHTML='<span class=&quot;material-symbols-outlined text-[18px]&quot;>play_arrow</span>';"></video>
-                ` : `
-                  <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.media_url)}"
-                       alt="${KultUI.escapeHtml(featuredVideo.title)}"
-                       class="w-full h-full object-cover" />
-                `}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30 pointer-events-none"></div>
-
-                <!-- Top Controls on Featured Reel -->
-                <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
-                  <span class="px-2 py-1 rounded bg-white text-zinc-900 font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider font-bold flex items-center gap-1 shadow">
-                    <span class="material-symbols-outlined text-[13px]">videocam</span> Reel Destacado
-                  </span>
-
+            <div class="neon-card-border">
+              <div class="neon-card-inner flex flex-col justify-between">
+                <div class="relative w-full h-60 sm:h-72 bg-zinc-950 overflow-hidden">
                   ${featuredVideo.media_type === 'video' ? `
-                    <div class="flex items-center gap-1.5">
-                      <button type="button"
-                              title="Activar/Silenciar Audio"
-                              onclick="KultApp.toggleVideoMute('hero-featured-video', this, event)"
-                              class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                        <span class="material-symbols-outlined text-[16px]">volume_off</span>
-                      </button>
-                      <button id="hero-play-btn"
-                              type="button"
-                              title="Pausar/Reproducir"
-                              onclick="KultApp.toggleInlineVideo('hero-featured-video', this, event)"
-                              class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                        <span class="material-symbols-outlined text-[18px]">pause</span>
-                      </button>
-                      <button type="button"
-                              title="Pantalla Completa"
-                              onclick="KultApp.openLightbox(${featuredVideo.id}, event)"
-                              class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
-                        <span class="material-symbols-outlined text-[16px]">open_in_full</span>
-                      </button>
-                    </div>
-                  ` : ''}
-                </div>
+                    <video id="hero-featured-video"
+                           class="kult-portfolio-video w-full h-full object-cover"
+                           src="${KultUI.escapeHtml(featuredVideo.media_url)}${featuredVideo.media_url.includes('#') ? '' : '#t=0.001'}"
+                           preload="metadata"
+                           autoplay
+                           muted
+                           playsinline
+                           onended="const b=document.getElementById('hero-play-btn');if(b)b.innerHTML='<span class=&quot;material-symbols-outlined text-[18px]&quot;>play_arrow</span>';"></video>
+                  ` : `
+                    <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.media_url)}"
+                         alt="${KultUI.escapeHtml(featuredVideo.title)}"
+                         class="w-full h-full object-cover" />
+                  `}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30 pointer-events-none"></div>
 
-                <!-- Author pill bottom-left of video -->
-                <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-2">
-                    <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.barber_avatar)}" alt="${KultUI.escapeHtml(featuredVideo.barber_name)}" class="w-6 h-6 rounded-full object-cover border border-white" />
-                    <span class="font-label-sm text-[11px] text-white font-bold uppercase">${KultUI.escapeHtml(featuredVideo.barber_name)}</span>
+                  <!-- Top Controls on Featured Reel -->
+                  <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                    <span class="px-2 py-1 rounded bg-white text-zinc-900 font-label-sm text-[9px] sm:text-[10px] uppercase tracking-wider font-bold flex items-center gap-1 shadow">
+                      <span class="material-symbols-outlined text-[13px]">videocam</span> Reel Destacado
+                    </span>
+
+                    ${featuredVideo.media_type === 'video' ? `
+                      <div class="flex items-center gap-1.5">
+                        <button type="button"
+                                title="Activar/Silenciar Audio"
+                                onclick="KultApp.toggleVideoMute('hero-featured-video', this, event)"
+                                class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                          <span class="material-symbols-outlined text-[16px]">volume_off</span>
+                        </button>
+                        <button id="hero-play-btn"
+                                type="button"
+                                title="Pausar/Reproducir"
+                                onclick="KultApp.toggleInlineVideo('hero-featured-video', this, event)"
+                                class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                          <span class="material-symbols-outlined text-[18px]">pause</span>
+                        </button>
+                        <button type="button"
+                                title="Pantalla Completa"
+                                onclick="KultApp.openLightbox(${featuredVideo.id}, event)"
+                                class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-zinc-900 flex items-center justify-center shadow transition-all">
+                          <span class="material-symbols-outlined text-[16px]">open_in_full</span>
+                        </button>
+                      </div>
+                    ` : ''}
                   </div>
-                  <span class="px-2 py-0.5 rounded bg-black/70 text-white border border-white/20 font-label-sm text-[9px] uppercase">
-                    ${KultUI.escapeHtml(featuredVideo.technique_tag || 'Master Session')}
-                  </span>
-                </div>
-              </div>
 
-              <!-- Clean White Footer below video so text never collides on mobile -->
-              <div class="p-3.5 sm:p-4 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <h2 class="font-title-md text-sm sm:text-base text-primary font-bold uppercase leading-snug truncate">${KultUI.escapeHtml(featuredVideo.title)}</h2>
-                  <p class="font-body-sm text-xs text-on-surface-variant line-clamp-1 mt-0.5">${KultUI.escapeHtml(featuredVideo.description)}</p>
+                  <!-- Author pill bottom-left of video -->
+                  <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <img decoding="async" src="${KultUI.escapeHtml(featuredVideo.barber_avatar)}" alt="${KultUI.escapeHtml(featuredVideo.barber_name)}" class="w-6 h-6 rounded-full object-cover border border-white" />
+                      <span class="font-label-sm text-[11px] text-white font-bold uppercase">${KultUI.escapeHtml(featuredVideo.barber_name)}</span>
+                    </div>
+                    <span class="px-2 py-0.5 rounded bg-black/70 text-white border border-white/20 font-label-sm text-[9px] uppercase">
+                      ${KultUI.escapeHtml(featuredVideo.technique_tag || 'Master Session')}
+                    </span>
+                  </div>
                 </div>
-                <button type="button"
-                        onclick="KultApp.bookFromPortfolio(${featuredVideo.id})"
-                        class="btn-kult-primary py-2 px-3.5 text-xs shrink-0 w-full sm:w-auto">
-                  <span>Reservar este Look</span>
-                  <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-                </button>
+
+                <!-- Clean White Footer below video -->
+                <div class="p-3.5 sm:p-4 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div class="min-w-0">
+                    <h2 class="font-title-md text-sm sm:text-base text-primary font-bold uppercase leading-snug truncate">${KultUI.escapeHtml(featuredVideo.title)}</h2>
+                    <p class="font-body-sm text-xs text-on-surface-variant line-clamp-1 mt-0.5">${KultUI.escapeHtml(featuredVideo.description)}</p>
+                  </div>
+                  <button type="button"
+                          onclick="KultApp.bookFromPortfolio(${featuredVideo.id})"
+                          class="btn-kult-primary py-2.5 px-4 text-xs shrink-0 w-full sm:w-auto">
+                    <span>Reservar este Look</span>
+                    <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                  </button>
+                </div>
               </div>
             </div>
           ` : ''}
@@ -520,32 +478,7 @@ const KultApp = {
       </div>
 
       <!-- ================================================================== -->
-      <!-- 2. ACTIVE BARBER SPOTLIGHT BANNER (WHEN FILTERED BY A BARBER)      -->
-      <!-- ================================================================== -->
-      ${selectedBarberObj ? `
-        <div class="surface-level-2 rounded-xl p-4 mb-5 border border-zinc-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <img decoding="async" src="${KultUI.escapeHtml(selectedBarberObj.avatar_url)}" alt="${KultUI.escapeHtml(selectedBarberObj.name)}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-zinc-900 shrink-0" />
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-headline-md text-base sm:text-lg text-primary font-bold uppercase">${KultUI.escapeHtml(selectedBarberObj.name)}</h3>
-                <span class="px-2 py-0.5 rounded-full bg-zinc-900 text-white font-label-sm text-[9px] uppercase font-bold">
-                  ★ ${Number(selectedBarberObj.rating).toFixed(1)}
-                </span>
-              </div>
-              <span class="font-label-sm text-[10px] uppercase text-[#059669] font-bold block">${KultUI.escapeHtml(selectedBarberObj.specialty)}</span>
-              <p class="font-body-sm text-xs text-on-surface-variant mt-0.5 line-clamp-2">${KultUI.escapeHtml(selectedBarberObj.bio)}</p>
-            </div>
-          </div>
-          <button type="button" class="btn-kult-primary text-xs shrink-0 w-full sm:w-auto" onclick="KultApp.quickBookBarber(${selectedBarberObj.id})">
-            <span>Reservar con ${KultUI.escapeHtml(selectedBarberObj.name.split(' ')[0])}</span>
-            <span class="material-symbols-outlined text-[16px]">event_available</span>
-          </button>
-        </div>
-      ` : ''}
-
-      <!-- ================================================================== -->
-      <!-- 3. FILTER CONTROLS: VIDEOS / PHOTOS & SPECIALTY CATEGORIES         -->
+      <!-- 2. FILTER CONTROLS: VIDEOS / PHOTOS & SPECIALTY CATEGORIES         -->
       <!-- ================================================================== -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 mb-5 min-w-0">
         <!-- Media Type Filter Tabs -->

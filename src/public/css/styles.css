@@ -271,3 +271,136 @@ html, body {
 .pt-safe {
   padding-top: env(safe-area-inset-top, 0px);
 }
+
+/* ============================================================================
+   DYNAMIC NEON BORDERS FOR S BARBER STUDIO LOGO & HERO
+   ============================================================================ */
+@keyframes neonSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes neonGlowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 12px rgba(6, 182, 212, 0.45),
+      0 0 26px rgba(124, 58, 237, 0.28);
+  }
+  50% {
+    box-shadow:
+      0 0 18px rgba(124, 58, 237, 0.55),
+      0 0 36px rgba(236, 72, 153, 0.35);
+  }
+}
+
+.neon-logo-ring {
+  position: relative;
+  border-radius: 9999px;
+  padding: 4px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: neonGlowPulse 3.2s ease-in-out infinite;
+}
+
+.neon-logo-ring::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(
+    from 0deg,
+    #06B6D4,
+    #3B82F6,
+    #7C3AED,
+    #EC4899,
+    #10B981,
+    #06B6D4
+  );
+  animation: neonSpin 3.6s linear infinite;
+  will-change: transform;
+  z-index: 0;
+}
+
+.neon-logo-ring > .neon-logo-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.neon-header-logo {
+  position: relative;
+  border-radius: 9999px;
+  padding: 2.5px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.35), 0 0 18px rgba(124, 58, 237, 0.2);
+}
+
+.neon-header-logo::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    #06B6D4,
+    #7C3AED,
+    #EC4899,
+    #10B981,
+    #06B6D4
+  );
+  animation: neonSpin 4s linear infinite;
+  will-change: transform;
+  z-index: 0;
+}
+
+.neon-header-logo > .neon-logo-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.neon-card-border {
+  position: relative;
+  border-radius: 0.875rem;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px -6px rgba(124, 58, 237, 0.16), 0 4px 14px -4px rgba(6, 182, 212, 0.14);
+}
+
+.neon-card-border::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(
+    from 0deg,
+    #06B6D4,
+    #3B82F6,
+    #7C3AED,
+    #EC4899,
+    #10B981,
+    #06B6D4
+  );
+  animation: neonSpin 6s linear infinite;
+  will-change: transform;
+  z-index: 0;
+}
+
+.neon-card-border > .neon-card-inner {
+  position: relative;
+  z-index: 1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
